@@ -31,13 +31,13 @@ public class Client {
 		dgPacket.setPort(port);
 		dgSocket.send(dgPacket);
 	}
-	
+
 	public static void main(String[] args) throws IOException {
-        Client client = new Client();
-        String msg = "RGTR";
-        while (true) {
-        	client.send(msg, InetAddress.getByName("localhost"),5001);
-        	System.out.println(client.receive());					
+		Client client = new Client();
+		String msg = "RGTR";
+		while (true) {
+			client.send(msg, InetAddress.getByName("localhost"), 5001);
+			System.out.println(client.receive());
 		}
-}
+	}
 }
