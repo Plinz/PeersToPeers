@@ -48,7 +48,7 @@ public class Client {
 		dgSocket.send(dgPacket);
 	}
 
-	private void register( )
+	private void register()
 			throws IOException {
 		String msg = "RGTR";
 		byte[] buffer = msg.getBytes();
@@ -56,6 +56,26 @@ public class Client {
 		dgPacket.setAddress(this.address);
 		dgPacket.setPort(this.port);
 		dgSocket.send(dgPacket);
+	}
+	
+	private void sendList()			
+			throws IOException {
+		String msg = "RTRV:"+this.uuid;
+		byte[] buffer = msg.getBytes();
+		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
+		dgPacket.setAddress(this.address);
+		dgPacket.setPort(this.port);
+		dgSocket.send(dgPacket);
+	}
+
+	private String[] receiveList()
+			throws IOException {
+		byte[] buffer = new byte[_dgLength];
+		dgPacket = new DatagramPacket(buffer, _dgLength);
+		dgSocket.receive(dgPacket);
+		String list = new String(dgPacket.getData(), dgPacket.getOffset(),
+				dgPacket.getLength());
+		return list.split("|");
 	}
 
 	public static void main(String[] args) throws IOException {
