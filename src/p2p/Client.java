@@ -35,7 +35,7 @@ public class Client {
 		dgSocket.receive(dgPacket);
 		String[] tmp = new String(dgPacket.getData(), dgPacket.getOffset(), dgPacket.getLength()).split(":");
 		String uuid = tmp[1];
-		
+		this.uuid = uuid;
 		System.out.println(uuid + "\n");
 	}
 
