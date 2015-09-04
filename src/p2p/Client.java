@@ -94,12 +94,16 @@ public class Client {
 
 	private String[] receiveList()
 			throws IOException {
+		byte[] buf = new byte[_dgLength];
+		dgPacket = new DatagramPacket(buf, _dgLength);
+		dgSocket.receive(dgPacket);
 		byte[] buffer = new byte[_dgLength];
 		dgPacket = new DatagramPacket(buffer, _dgLength);
 		dgSocket.receive(dgPacket);
 		String list = new String(dgPacket.getData(), dgPacket.getOffset(),
 				dgPacket.getLength());
-		return list.split("|");
+		String [] l = list.split("|");
+		return l;
 	}
 
 	public static void main(String[] args) throws IOException {
