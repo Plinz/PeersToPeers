@@ -9,6 +9,7 @@ public class Client {
 	private final static int _dgLength = 50;
 	private DatagramSocket dgSocket;
 	private DatagramPacket dgPacket;
+	private String uuid;
 
 	public Client() throws IOException {
 		dgSocket = new DatagramSocket();
@@ -29,6 +30,16 @@ public class Client {
 		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
 		dgPacket.setAddress(address);
 		dgPacket.setPort(port);
+		dgSocket.send(dgPacket);
+	}
+	
+	private void sendQuit()
+			throws IOException {
+		String msg = "QUIT:"+this.uuid;
+		byte[] buffer = msg.getBytes();
+		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
+		dgPacket.setAddress(InetAddress.getByName("localhost"));
+		dgPacket.setPort(5001);
 		dgSocket.send(dgPacket);
 	}
 
