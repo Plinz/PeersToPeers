@@ -22,6 +22,17 @@ public class Client {
 				dgPacket.getLength());
 
 	}
+	
+	private void receiveUuid() throws IOException {
+		byte[] buffer = new byte[_dgLength];
+		dgPacket = new DatagramPacket(buffer, _dgLength);
+		dgSocket.receive(dgPacket);
+		String[] tmp = new String(dgPacket.getData(), dgPacket.getOffset(), dgPacket.getLength()).split(":");
+		String uuid = tmp[1];
+		
+		System.out.println(uuid + "\n");
+	}
+
 
 	private void send(String msg, InetAddress address, int port)
 			throws IOException {
@@ -41,6 +52,8 @@ public class Client {
 		dgPacket.setPort(port);
 		dgSocket.send(dgPacket);
 	}
+	
+	
 
 	public static void main(String[] args) throws IOException {
 		Client client = new Client();
