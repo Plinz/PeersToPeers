@@ -1,4 +1,4 @@
-package fr.lille1.iut.p2p;
+package p2p;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
