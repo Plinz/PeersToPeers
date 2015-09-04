@@ -28,6 +28,30 @@ public class Client {
 				dgPacket.getLength());
 
 	}
+	
+	private void receiveQuit() throws IOException {
+		byte[] buffer = new byte[_dgLength];
+		dgPacket = new DatagramPacket(buffer, _dgLength);
+		dgSocket.receive(dgPacket);
+		String reponse = new String(dgPacket.getData(), dgPacket.getOffset(), dgPacket.getLength());
+		if (reponse.equals("OK")) {
+			System.out.println("le serveur a bien quitter");
+		} else if (reponse.equals("ERROR")) {
+			System.out.println("le serveur n'a pas pu quitter suite a une erreur");
+
+		}
+	}
+	
+	private void receiveUuid() throws IOException {
+		byte[] buffer = new byte[_dgLength];
+		dgPacket = new DatagramPacket(buffer, _dgLength);
+		dgSocket.receive(dgPacket);
+		String[] tmp = new String(dgPacket.getData(), dgPacket.getOffset(), dgPacket.getLength()).split(":");
+		String uuid = tmp[1];
+		this.uuid = uuid;
+		System.out.println(uuid + "\n");
+	}
+
 
 	private void send(String msg, InetAddress address, int port)
 			throws IOException {
