@@ -29,7 +29,7 @@ public class Rdv {
     		int port = dgPacket.getPort();
     		String answer = null;
 
-    		if ( msg.equals("RGTR\n") ) { // enlever le \n après avoir testé avec nc
+    		if ( msg.equals("RGTR") ) { // enlever le \n après avoir testé avec nc
     			answer = register(address, port);
     		}
     		else {

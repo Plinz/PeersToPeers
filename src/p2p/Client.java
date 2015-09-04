@@ -108,10 +108,14 @@ public class Client {
 
 	public static void main(String[] args) throws IOException {
 		Client client = new Client(InetAddress.getByName("localhost"), 5001);
-		String msg = "RGTR";
-		while (true) {
-			client.send(msg, InetAddress.getByName("localhost"), 5001);
-			System.out.println(client.receive());
-		}
+		client.register();
+		client.receiveUuid();
+		client.sendList();
+		client.receiveList();
+		Client client2 = new Client(InetAddress.getByName("localhost"), 5001);
+		client2.register();
+		client2.receiveUuid();
+		client2.sendList();
+		client2.receiveList();
 	}
 }
