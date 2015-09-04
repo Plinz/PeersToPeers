@@ -67,7 +67,6 @@ public class Rdv {
     }
     
     private void send(InetAddress address, int port, String msg) throws IOException {
-    	msg+="\n";
 		buffer = msg.getBytes();
 		DatagramPacket dgPacket = new DatagramPacket(buffer, 0, buffer.length, address, port);			
 		dgSocket.send(dgPacket);
