@@ -29,6 +29,19 @@ public class Client {
 
 	}
 	
+	private void receiveQuit() throws IOException {
+		byte[] buffer = new byte[_dgLength];
+		dgPacket = new DatagramPacket(buffer, _dgLength);
+		dgSocket.receive(dgPacket);
+		String reponse = new String(dgPacket.getData(), dgPacket.getOffset(), dgPacket.getLength());
+		if (reponse.equals("OK")) {
+			System.out.println("le serveur a bien quitter");
+		} else if (reponse.equals("ERROR")) {
+			System.out.println("le serveur n'a pas pu quitter suite a une erreur");
+
+		}
+	}
+	
 	private void receiveUuid() throws IOException {
 		byte[] buffer = new byte[_dgLength];
 		dgPacket = new DatagramPacket(buffer, _dgLength);
