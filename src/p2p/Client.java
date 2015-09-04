@@ -31,6 +31,16 @@ public class Client {
 		dgPacket.setPort(port);
 		dgSocket.send(dgPacket);
 	}
+	
+	private void register( InetAddress address, int port)
+			throws IOException {
+		String msg = "RGTR";
+		byte[] buffer = msg.getBytes();
+		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
+		dgPacket.setAddress(address);
+		dgPacket.setPort(port);
+		dgSocket.send(dgPacket);
+	}
 
 	public static void main(String[] args) throws IOException {
 		Client client = new Client();
