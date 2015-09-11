@@ -12,6 +12,12 @@ public class Fichier {
 		this.hashcode  = fichier.hashCode();
 		this.uuid = uuid;
 	}
+	
+	public Fichier(String name, Integer hashcode, String uuid){
+		this.name=name;
+		this.hashcode=hashcode;
+		this.uuid=uuid;
+	}
 
 	public String getUuid() {
 		return uuid;
