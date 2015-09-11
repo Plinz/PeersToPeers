@@ -44,7 +44,7 @@ public class ServeurTCP {
 			reception = new BufferedReader(
                     new InputStreamReader(unClient.getInputStream()));
 	
-			String message = reception.readLine();
+			String message = reception.readLine();			
 			envoi.println(message + " World !");
 		} catch (IOException e) {
 			e.printStackTrace();
