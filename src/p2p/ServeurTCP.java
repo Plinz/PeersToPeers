@@ -29,28 +29,10 @@ public class ServeurTCP {
 				e.printStackTrace();
 				System.exit(1);
 			}
-		
-			realiseService(unClient);
+			new ThreadServeurTCP(unClient).run();
 		}
 	}
-	
-	private void realiseService(Socket unClient) {
-		PrintWriter envoi = null;
-		BufferedReader reception = null;
-		try {
-	
-			envoi = new PrintWriter(unClient.getOutputStream(), true);
-			
-			reception = new BufferedReader(
-                    new InputStreamReader(unClient.getInputStream()));
-	
-			String message = reception.readLine();
-			envoi.println(message + " World !");
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
+
 	
 	public static void main(String[] args) {
 		ServeurTCP serveur = new ServeurTCP(Integer.parseInt(args[0]));
