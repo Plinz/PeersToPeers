@@ -29,6 +29,7 @@ public class ServeurTCP {
 				e.printStackTrace();
 				System.exit(1);
 			}
+<<<<<<< HEAD
 		
 			realiseService(unClient);
 		}
@@ -49,8 +50,12 @@ public class ServeurTCP {
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
+=======
+			new ThreadServeurTCP(unClient).run();
+>>>>>>> f0db53f57f0eefab4275cd62bd4b6386d323a742
 		}
 	}
+
 	
 	public static void main(String[] args) {
 		ServeurTCP serveur = new ServeurTCP(Integer.parseInt(args[0]));
