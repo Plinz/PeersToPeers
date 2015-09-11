@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.UUID;
@@ -14,6 +15,7 @@ public class Rdv {
 	private Hashtable<String, PeerInfo> peers;
 	private byte[] buffer = null; 
 	private DatagramSocket dgSocket;
+	private ArrayList<Fichier> fichiers;
 	
     public Rdv() throws IOException {
     	dgSocket = new DatagramSocket(_pSrv);
@@ -44,12 +46,17 @@ public class Rdv {
     						send(address, port, sizeAnswer.toString());
     					}	
     				} else {
-    					if ( words[0].equals("QUIT") ) {
-    						answer = quit(words[1].trim());
+    					if ( words[0].equals("FILE") ) {
+    						answer =  miseAJour(words[1].trim(), words[2].trim());
     					}
     					else {
-    						System.out.println("ERROR");
-    						answer = "ERROR";
+    						if ( words[0].equals("QUIT") ) {
+        						answer = quit(words[1].trim());
+        					}
+        					else {
+        						System.out.println("ERROR");
+        						answer = "ERROR";
+        					}
     					}
     				}
     			}
@@ -94,6 +101,24 @@ public class Rdv {
     	return "ERROR";
 	}
 
+	private String miseAJour(String uuid, String sfiles) {
+    	System.out.println("Mise A Jour");
+    	if (peers.containsKey(uuid)){
+    		String [] files = sfiles.split("|");
+    		fichiers = new ArrayList<Fichier>();
+    		for (int i=0; i<files.length-1; i+=2){
+    			fichiers.add(new Fichier(files[i], Integer.parseInt(files[i+1]), uuid));
+    		}
+    		Enumeration<PeerInfo> p = peers.elements();
+    		while ( p.hasMoreElements() ) {
+    			PeerInfo peer = p.nextElement();
+    			
+    		}
+    		return "OK";
+    	}
+    	return "ERROR";
+	}
+    
 	private String quit(String uuid) {
     	System.out.println("QUITing");
     	

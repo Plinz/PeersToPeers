@@ -15,8 +15,6 @@ public class Client {
 	private String uuid;
 	private InetAddress address;
 	private Integer port;
-	private ArrayList<String> nameFiles;
-	private ArrayList<File> Files;
 
 	public Client(InetAddress address, Integer port) throws IOException {
 		dgSocket = new DatagramSocket();
