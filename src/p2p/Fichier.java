@@ -5,10 +5,20 @@ import java.io.File;
 public class Fichier {
 	private int hashcode;
 	private String name;
+	private String uuid;
 	
-	public Fichier(File fichier){
+	public Fichier(File fichier, String uuid){
 		this.name = fichier.getName();
 		this.hashcode  = fichier.hashCode();
+		this.uuid = uuid;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public int getHashcode() {
@@ -25,7 +35,5 @@ public class Fichier {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-		
+	}	
 }
