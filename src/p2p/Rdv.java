@@ -112,7 +112,7 @@ public class Rdv {
     		Enumeration<PeerInfo> p = peers.elements();
     		while ( p.hasMoreElements() ) {
     			PeerInfo peer = p.nextElement();
-    			
+    			 
     		}
     		return "OK";
     	}
