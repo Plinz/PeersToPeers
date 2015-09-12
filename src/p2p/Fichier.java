@@ -6,17 +6,17 @@ public class Fichier {
 	private int hashcode;
 	private String name;
 	private String uuid;
-	
-	public Fichier(File fichier, String uuid){
+
+	public Fichier(File fichier, String uuid) {
 		this.name = fichier.getName();
-		this.hashcode  = fichier.hashCode();
+		this.hashcode = fichier.hashCode();
 		this.uuid = uuid;
 	}
-	
-	public Fichier(String name, Integer hashcode, String uuid){
-		this.name=name;
-		this.hashcode=hashcode;
-		this.uuid=uuid;
+
+	public Fichier(String name, Integer hashcode, String uuid) {
+		this.name = name;
+		this.hashcode = hashcode;
+		this.uuid = uuid;
 	}
 
 	public String getUuid() {
@@ -41,5 +41,11 @@ public class Fichier {
 
 	public void setName(String name) {
 		this.name = name;
-	}	
+	}
+
+	public String toString() {
+		String msg = this.getName() + "|" + this.getHashcode() + "|"
+				+ this.getUuid() + "|";
+		return msg;
+	}
 }
