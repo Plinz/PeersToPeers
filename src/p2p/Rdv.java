@@ -82,10 +82,12 @@ public class Rdv {
         						send(address, port, sizeAnswer.toString());
         					}
         		    		send(address, port, answer);
+        		    		String fich="";
         		    		for (int i=0; i<this.fichiers.size(); i++) 		    			
-        		    			msg+= this.fichiers.get(i).toString();
-        		    		msg.substring(0, msg.length()-1);
-        		    		send(address, port, msg);
+        		    			fich+= this.fichiers.get(i).toString();
+        		    		if (fich.length()>0)
+        		    			fich.substring(0, fich.length()-1);
+        		    		send(address, port, fich);
     						break;
     					case "NEWFILE" :
     						this.notifyPeersAddFiles(words[2], words[1]);

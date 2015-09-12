@@ -121,13 +121,13 @@ public class Client {
 	private void receiveList()
 			throws IOException {
 		this.receive();
-		String [] list = this.receive().split("|");
-		for (int i=0; i<list.length; i++){
-			String[] temp = list[i].split(":");
-			this.peers.add(new PeerInfo(temp[0],temp[1],temp[2]));
+		String [] list = this.receive().split("[|]");
+		for (int i=0; list.length>2 && i<list.length; i+=3){
+			this.peers.add(new PeerInfo(list[i],list[i+1],list[i+2]));
 		}
-		String [] files = this.receive().split("|");
-		for (int i=0; i<files.length; i+=3){
+		
+		String [] files = this.receive().split("[|]");
+		for (int i=0; files.length>2 && i<files.length; i+=3){
 			this.fichiers.add(new Fichier(files[i], Integer.parseInt(files[i+1]), files[i+2]));
 		}
 	}
