@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class Client {
 
@@ -17,8 +18,8 @@ public class Client {
 	private String uuid;
 	private InetAddress address;
 	private Integer port;
-	private ArrayList<Fichier> fichiers;
-	private ArrayList<PeerInfo> peers;
+	public ArrayList<Fichier> fichiers;
+	public Hashtable<String, PeerInfo> peers;
 
 	/**
 	 * Constructeur d'un client
@@ -38,7 +39,9 @@ public class Client {
 		this.address = address;
 		this.port = port;
 		this.fichiers = new ArrayList<Fichier>();
-		this.peers = new ArrayList<PeerInfo>();
+		this.fichiers.add(new Fichier("name", 55555, "5Fd25Sfr5"));
+		this.fichiers.add(new Fichier("film", 42424242, "564fZEF2"));
+		this.peers = new Hashtable<String, PeerInfo>();
 	}
 
 	public int initialisation() throws IOException {
@@ -139,7 +142,7 @@ public class Client {
 	 * 
 	 * @throws IOException
 	 */
-	private int sendQuit() throws IOException {
+	public int sendQuit() throws IOException {
 		return this.send("QUIT:" + this.uuid, this.address, this.port);
 	}
 
@@ -175,7 +178,7 @@ public class Client {
 			return 0;
 		String[] list = reponse.split("[|]");
 		for (int i = 0; list.length > 2 && i < list.length; i += 3) {
-			this.peers.add(new PeerInfo(list[i], list[i + 1], list[i + 2]));
+			this.peers.put(list[i], new PeerInfo(list[i], list[i + 1], list[i + 2]));
 		}
 
 		String[] files = this.receive().split("[|]");
@@ -264,18 +267,16 @@ public class Client {
 			break;
 		case "NEWPEER":
 			for (int i = 0; i < list.length; i += 3) {
-				this.peers.add(new PeerInfo(list[i], list[i + 1], list[i + 2]));
+				this.peers.put(list[i], new PeerInfo(list[i], list[i + 1], list[i + 2]));
 			}
 			break;
 		case "RMVPEER":
-			for (int i = 0; i < this.peers.size(); i++) {
-				if (this.peers.get(i).equals(change[1]))
-					this.peers.remove(i);
-			}
+			this.peers.remove(change[1]);
 			break;
 		}
 		return 1;
 	}
+	
 
 	/**
 	 * Suite d'instruction lancant un client

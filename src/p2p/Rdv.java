@@ -254,7 +254,8 @@ public class Rdv {
     		if (this.fichiers.get(i).getUuid().equals(uuid))
     			fileRemoving+= this.fichiers.get(i).toString();
     	}
-    	fileRemoving.substring(0, fileRemoving.length()-1);
+    	if (this.fichiers.size()!=0)
+    		fileRemoving.substring(0, fileRemoving.length()-1);
     	this.notifyPeersRemoveFiles(fileRemoving, uuid);
     	this.notifyPeersRemovePeer(uuid);
     	if ( peers.remove(uuid) != null ) {

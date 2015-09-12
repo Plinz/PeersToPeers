@@ -1,5 +1,6 @@
 package ihm;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -26,13 +27,13 @@ public class FenetreConnexion extends JPanel implements ActionListener {
 
 	JFrame parent;
 	
-	JLabel serveur = new JLabel("Connexion au serveur :");
+	JLabel serveur = new JLabel("Indentifiant du serveur :");
 	JLabel address = new JLabel("Adresse :");
 	JLabel port = new JLabel("Port :");
 	JLabel error = new JLabel("");
 	JTextField ip = new JTextField();
 	JTextField po = new JTextField();
-	JButton ok = new JButton("OK");
+	JButton ok = new JButton("Connexion");
 
 	public FenetreConnexion(JFrame frame) {
 		setPreferredSize(new Dimension(300, 150));
@@ -77,9 +78,11 @@ public class FenetreConnexion extends JPanel implements ActionListener {
 		c.gridheight = GridBagConstraints.REMAINDER;
 		c.anchor = GridBagConstraints.CENTER;
 		this.add(error, c);
+		this.error.setForeground(Color.RED);
 		this.error.setVisible(false);
 		this.parent = frame;
 		
+		parent.setTitle("Connexion");
 		parent.add(this);
 		parent.setVisible(false);
 		parent.pack();
@@ -104,7 +107,9 @@ public class FenetreConnexion extends JPanel implements ActionListener {
 					this.error.setVisible(true);					
 				}
 				else{
-					new FenetrePrincipale(this.parent);
+					this.setVisible(false);
+					this.parent.add(new FenetrePrincipale(this.parent, c));
+					this.parent.revalidate();
 				}
 			} catch (IOException e2) {
 				this.error.setText("Connexion Impossible");
