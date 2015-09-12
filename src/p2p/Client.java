@@ -183,7 +183,7 @@ public class Client {
 	private void receiveChange()
 			throws IOException {
 		String[] change = this.receive().split(":");
-		String[] list = change[1].split("|");
+		String[] list = change[1].split("[|]");
 		switch (change[0]){
 		case "NEWFILE":
 			for (int i=0; i<list.length; i+=3){
@@ -203,6 +203,12 @@ public class Client {
 		case "NEWPEER":
 			for (int i=0; i<list.length; i+=3){
 				this.peers.add(new PeerInfo(list[i],list[i+1],list[i+2]));
+			}
+			break;
+		case "RMVPEER":
+			for (int i=0; i<this.peers.size(); i++){
+				if (this.peers.get(i).equals(change[1]))
+					this.peers.remove(i);
 			}
 			break;
 		}

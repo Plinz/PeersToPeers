@@ -225,6 +225,24 @@ public class Rdv {
 	}
     
 	/**
+	 * Methode notifiant les pairs qu'un pair s'est retirer du reseau
+	 * @param uuid
+	 */
+	private void notifyPeersRemovePeer(String uuid){
+		this.peers.remove(uuid);
+		Enumeration<PeerInfo> p = peers.elements();
+		while ( p.hasMoreElements() ) {
+			PeerInfo peer = p.nextElement();
+				try {
+					send(peer.getAddress(), peer.getPort(), "RMVPEER"+uuid);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	/**
 	 * Methode enlevant un pair de la liste
 	 * @param uuid indentifiant du client
 	 * @return OK s'il a bien ete enleve ERROR sinon
@@ -236,8 +254,9 @@ public class Rdv {
     		if (this.fichiers.get(i).getUuid().equals(uuid))
     			fileRemoving+= this.fichiers.get(i).toString();
     	}
-    	fileRemoving+="END";
+    	fileRemoving.substring(0, fileRemoving.length()-1);
     	this.notifyPeersRemoveFiles(fileRemoving, uuid);
+    	this.notifyPeersRemovePeer(uuid);
     	if ( peers.remove(uuid) != null ) {
     		return "OK";
     	}
