@@ -39,7 +39,7 @@ public class Rdv {
 	/**
 	 * Liste des fichiers sur le reseau
 	 */
-	private ArrayList<Fichier> fichiers;
+//	private ArrayList<Fichier> fichiers;
 	
 	/**
 	 * Constructeur du serveur 
@@ -63,37 +63,38 @@ public class Rdv {
     		int port = dgPacket.getPort();
     		String answer = null;
 
+    		
     		if ( msg.equals("RGTR") ) {
     			answer = register(address, port);
+        		send(address, port, answer);
     		}
     		else {
     			String[] words = msg.split(":");
-    			if ( words.length == 2 ) {
-    				if ( words[0].equals("RTRV") ) {
-    					answer = retrieve(words[1].trim());
-    					if ( ! answer.equals("ERROR") ) {
-    						StringBuilder sizeAnswer = new StringBuilder("OK:");
-    						sizeAnswer.append(answer.length());
-    						System.out.println(sizeAnswer);
-    						send(address, port, sizeAnswer.toString());
-    					}	
-    				} else {
-    					if ( words[0].equals("FILE") ) {
-    						answer =  miseAJour(words[1].trim(), words[2].trim());
-    					}
-    					else {
-    						if ( words[0].equals("QUIT") ) {
-        						answer = quit(words[1].trim());
+    			if ( words.length >= 2 ) {
+    				switch (words[0]) {
+    					case "RTRV" :
+    						answer = retrieve(words[1].trim());
+        					if ( ! answer.equals("ERROR") ) {
+        						StringBuilder sizeAnswer = new StringBuilder("OK:");
+        						sizeAnswer.append(answer.length());
+        						System.out.println(sizeAnswer);
+        						send(address, port, sizeAnswer.toString());
         					}
-        					else {
-        						System.out.println("ERROR");
-        						answer = "ERROR";
-        					}
-    					}
+        		    		send(address, port, answer);
+    						break;
+    					case "NEWFILE" :
+    						this.notifyPeersAddFiles(words[2], words[1]);
+    						break;
+    					case "REMOVEFILE" :
+    						this.notifyPeersRemoveFiles(words[2], words[1]);
+    						break;
+    					case "QUIT" :
+    						answer = quit(words[1].trim());
+        		    		send(address, port, answer);
+    						break;
     				}
     			}
     		}
-    		send(address, port, answer);
     	}
     }
     
@@ -151,45 +152,20 @@ public class Rdv {
 	}
     
     /**
-     * Methode mettant a jour la liste des fichier et qui la renvoie à tous
-     * @param uuid Du client faisant une modification
-     * @param sfiles Concatenation des information des fichier à ajouter
-     * @return OK si la mise c'est bien passé ERROR sinon
-     */
-/*
-    private String miseAJour(String uuid, String sfiles) {
-    	System.out.println("Mise A Jour");
-    	if (peers.containsKey(uuid)){
-    		String [] files = sfiles.split("|");
-    		fichiers = new ArrayList<Fichier>();
-    		for (int i=0; i<files.length-1; i+=2){
-    			fichiers.add(new Fichier(files[i], Integer.parseInt(files[i+1]), uuid));
-    		}
-    		Enumeration<PeerInfo> p = peers.elements();
-    		while ( p.hasMoreElements() ) {
-    			PeerInfo peer = p.nextElement();
-    			try {
-					this.send(peer.getAddress(), peer.getPort(), this.getMessageFichier());
-				} catch (IOException e) {
-					e.printStackTrace();
-					return "ERROR";
-				}
-    		}
-    		return "OK";
-    	}
-    	return "ERROR";
-	}
-*/
-
-    /**
      * Methode qui notifie les autres pairs d'ajout de nouveau fichiers sur le reseau 
      * @param files les nouveaux fichiers
      * @param uuid l'identifiant du pair possedant les nouveau fichiers
      */
-	private void notifyPeersAddFiles (ArrayList<Fichier> files, Integer uuid){
-		String msg = "PUSHNEWFILES:";
-		for (int i=0; i<files.size(); i++){
-			msg+=files.get(i).toString();
+	private void notifyPeersAddFiles (String files, String uuid){
+		String [] temp = files.split("|");
+		ArrayList<Fichier> fichiers = new ArrayList<Fichier>();
+		for (int i=0; i<temp.length-1; i+=2){
+			fichiers.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid));
+		}
+
+		String msg = "NEWFILE:";
+		for (int i=0; i<fichiers.size(); i++){
+			msg+=fichiers.get(i).toString();
 		}
 		msg+="END";
 		Enumeration<PeerInfo> p = peers.elements();
@@ -210,10 +186,16 @@ public class Rdv {
 	 * @param files les fichiers supprimer
 	 * @param uuid l'identifiant du pair possedant les fichier qui sont supprimer
 	 */
-	private void notifyPeersRemoveFiles (ArrayList<Fichier> files, Integer uuid){
-		String msg = "PUSHREMOVEFILES:";
-		for (int i=0; i<files.size(); i++){
-			msg+=files.get(i).toString();
+	private void notifyPeersRemoveFiles (String files, String uuid){
+		String [] temp = files.split("|");
+		ArrayList<Fichier> fichiers = new ArrayList<Fichier>();
+		for (int i=0; i<temp.length-1; i+=2){
+			fichiers.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid));
+		}
+		
+		String msg = "REMOVEFILE:";
+		for (int i=0; i<fichiers.size(); i++){
+			msg+=fichiers.get(i).toString();
 		}
 		msg+="END";
 		Enumeration<PeerInfo> p = peers.elements();
@@ -227,20 +209,6 @@ public class Rdv {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Methode permettant de mettre en String les information de la liste des fichiers
-	 * @return les information de la liste des fichiers
-	 */
-	private String getMessageFichier(){
-		String msg ="";
-		for (int i=0; i<this.fichiers.size(); i++){
-			Fichier f = this.fichiers.get(i);
-			msg+=f.getName()+"|"+f.getHashcode()+"|"+f.getUuid()+"|";
-		}
-		msg+="END";
-		return msg;
 	}
     
 	/**
