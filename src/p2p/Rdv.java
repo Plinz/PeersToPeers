@@ -39,7 +39,7 @@ public class Rdv {
 	/**
 	 * Liste des fichiers sur le reseau
 	 */
-//	private ArrayList<Fichier> fichiers;
+	private ArrayList<Fichier> fichiers;
 	
 	/**
 	 * Constructeur du serveur 
@@ -81,6 +81,11 @@ public class Rdv {
         						send(address, port, sizeAnswer.toString());
         					}
         		    		send(address, port, answer);
+        		    		msg = "INITFILE:";
+        		    		for (int i=0; i<this.fichiers.size(); i++) 		    			
+        		    			msg+= this.fichiers.get(i).toString();
+        		    		msg+="END";
+        		    		send(address, port, msg);
     						break;
     					case "NEWFILE" :
     						this.notifyPeersAddFiles(words[2], words[1]);
@@ -218,7 +223,13 @@ public class Rdv {
 	 */
 	private String quit(String uuid) {
     	System.out.println("QUITing");
-    	
+    	String fileRemoving = "";
+    	for (int i=0; i<this.fichiers.size(); i++){
+    		if (this.fichiers.get(i).getUuid().equals(uuid))
+    			fileRemoving+= this.fichiers.get(i).toString();
+    	}
+    	fileRemoving+="END";
+    	this.notifyPeersRemoveFiles(fileRemoving, uuid);
     	if ( peers.remove(uuid) != null ) {
     		return "OK";
     	}
