@@ -1,6 +1,5 @@
 package p2p;
 
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.UUID;

@@ -12,14 +12,14 @@ public class Dossier {
 
 	public Dossier(String lien) {
 		this.dossier = new File(lien);
-		remplirMap();
+		remplirMap(dossier);
 	}
 
-	public void remplirMap() {
-		File[] tmp = dossier.listFiles();
+	public void remplirMap(File file) {
+		File[] tmp = file.listFiles();
 		for (int i = 0; i < tmp.length; i++) {
 			if (tmp[i].isDirectory()) {
-				remplirMap();
+				remplirMap(tmp[i]);
 			} else {
 				map.put(tmp[i].hashCode(), tmp[i].getName());
 			}
