@@ -187,7 +187,8 @@ public class Rdv {
 	}
 	
 	/**
-     * Methode qui notifie les autres pairs de la suppression fichiers sur le reseau 
+     * Methode qui notifie les autres pairs de la suppression fichiers sur le reseau et supprime les 
+     * fichiers sur le serveur.
 	 * @param files les fichiers supprimer
 	 * @param uuid l'identifiant du pair possedant les fichier qui sont supprimer
 	 */
@@ -195,9 +196,14 @@ public class Rdv {
 		String [] temp = files.split("|");
 		ArrayList<Fichier> fichiers = new ArrayList<Fichier>();
 		for (int i=0; i<temp.length-1; i+=2){
-			fichiers.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid));
+			Fichier f = new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid);
+			for (int j=0; j<this.fichiers.size(); j++){
+				if (this.fichiers.get(j).compareTo(f)==0){
+					fichiers.add(f);
+					this.fichiers.remove(j);
+				}
+			}
 		}
-		
 		String msg = "REMOVEFILE:";
 		for (int i=0; i<fichiers.size(); i++){
 			msg+=fichiers.get(i).toString();
