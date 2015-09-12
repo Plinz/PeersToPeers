@@ -90,7 +90,7 @@ public class Rdv {
     					case "NEWFILE" :
     						this.notifyPeersAddFiles(words[2], words[1]);
     						break;
-    					case "REMOVEFILE" :
+    					case "RMVFILE" :
     						this.notifyPeersRemoveFiles(words[2], words[1]);
     						break;
     					case "QUIT" :
@@ -164,7 +164,7 @@ public class Rdv {
 	private void notifyPeersAddFiles (String files, String uuid){
 		String [] temp = files.split("|");
 		ArrayList<Fichier> fichiers = new ArrayList<Fichier>();
-		for (int i=0; i<temp.length-1; i+=2){
+		for (int i=0; i<temp.length; i+=2){
 			fichiers.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid));
 		}
 
@@ -172,7 +172,7 @@ public class Rdv {
 		for (int i=0; i<fichiers.size(); i++){
 			msg+=fichiers.get(i).toString();
 		}
-		msg+="END";
+		msg.substring(0, msg.length()-1);
 		Enumeration<PeerInfo> p = peers.elements();
 		while ( p.hasMoreElements() ) {
 			PeerInfo peer = p.nextElement();
@@ -195,7 +195,7 @@ public class Rdv {
 	private void notifyPeersRemoveFiles (String files, String uuid){
 		String [] temp = files.split("|");
 		ArrayList<Fichier> fichiers = new ArrayList<Fichier>();
-		for (int i=0; i<temp.length-1; i+=2){
+		for (int i=0; i<temp.length; i+=2){
 			Fichier f = new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid);
 			for (int j=0; j<this.fichiers.size(); j++){
 				if (this.fichiers.get(j).compareTo(f)==0){
@@ -204,11 +204,11 @@ public class Rdv {
 				}
 			}
 		}
-		String msg = "REMOVEFILE:";
+		String msg = "RMVFILE:";
 		for (int i=0; i<fichiers.size(); i++){
 			msg+=fichiers.get(i).toString();
 		}
-		msg+="END";
+		msg.substring(0, msg.length()-1);
 		Enumeration<PeerInfo> p = peers.elements();
 		while ( p.hasMoreElements() ) {
 			PeerInfo peer = p.nextElement();
@@ -269,7 +269,7 @@ public class Rdv {
 	 * @throws IOException
 	 */
 	private void notifyAddPeers(PeerInfo newPeer) throws IOException {
-		String msg = "PUSHNEWPEERS:" + newPeer.toString();
+		String msg = "NEWPEER:" + newPeer.toString();
 		Enumeration<PeerInfo> p = peers.elements();
 		while ( p.hasMoreElements() ) {
 			PeerInfo peer = p.nextElement();

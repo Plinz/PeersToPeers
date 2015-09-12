@@ -49,6 +49,12 @@ public class Fichier{
 		return msg;
 	}
 
+	public String toStringWithOutUuid() {
+		String msg = this.getName() + "|" + this.getHashcode() + "|";
+		return msg;
+	}
+
+
 	public int compareTo(Fichier f) {
 		if (this.hashcode==f.getHashcode() && this.name==f.getName() && this.uuid==f.getUuid()){
 			return 0;

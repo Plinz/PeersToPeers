@@ -51,10 +51,7 @@ public class Client {
 	 * @throws IOException
 	 */
 	private void receiveQuit() throws IOException {
-		byte[] buffer = new byte[_dgLength];
-		dgPacket = new DatagramPacket(buffer, _dgLength);
-		dgSocket.receive(dgPacket);
-		String reponse = new String(dgPacket.getData(), dgPacket.getOffset(), dgPacket.getLength());
+		String reponse = this.receive();
 		if (reponse.equals("OK")) {
 			System.out.println("le serveur a bien quitter");
 		} else if (reponse.equals("ERROR")) {
@@ -68,10 +65,7 @@ public class Client {
 	 * @throws IOException
 	 */
 	private void receiveUuid() throws IOException {
-		byte[] buffer = new byte[_dgLength];
-		dgPacket = new DatagramPacket(buffer, _dgLength);
-		dgSocket.receive(dgPacket);
-		String[] tmp = new String(dgPacket.getData(), dgPacket.getOffset(), dgPacket.getLength()).split(":");
+		String[] tmp = this.receive().split(":");
 		String uuid = tmp[1];
 		this.uuid = uuid;
 		System.out.println(uuid + "\n");
@@ -99,12 +93,7 @@ public class Client {
 	 */
 	private void sendQuit()
 			throws IOException {
-		String msg = "QUIT:"+this.uuid;
-		byte[] buffer = msg.getBytes();
-		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
-		dgPacket.setAddress(this.address);
-		dgPacket.setPort(this.port);
-		dgSocket.send(dgPacket);
+		this.send("QUIT:"+this.uuid, this.address, this.port);
 	}
 
 	/**
@@ -113,12 +102,7 @@ public class Client {
 	 */
 	private void register()
 			throws IOException {
-		String msg = "RGTR";
-		byte[] buffer = msg.getBytes();
-		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
-		dgPacket.setAddress(this.address);
-		dgPacket.setPort(this.port);
-		dgSocket.send(dgPacket);
+		this.send("RGTR", this.address, this.port);
 	}
 	
 	/**
@@ -127,86 +111,100 @@ public class Client {
 	 */
 	private void initInformations()			
 			throws IOException {
-		String msg = "RTRV:"+this.uuid;
-		byte[] buffer = msg.getBytes();
-		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
-		dgPacket.setAddress(this.address);
-		dgPacket.setPort(this.port);
-		dgSocket.send(dgPacket);
+		this.send("RTRV:"+this.uuid, this.address, this.port);
 	}
-
+	
 	/**
 	 * Reception de la liste des pairs et des fichiers
 	 * @throws IOException
 	 */
 	private void receiveList()
 			throws IOException {
-		byte[] buf = new byte[_dgLength];
-		dgPacket = new DatagramPacket(buf, _dgLength);
-		dgSocket.receive(dgPacket);
-		byte[] buffer = new byte[_dgLength];
-		dgPacket = new DatagramPacket(buffer, _dgLength);
-		dgSocket.receive(dgPacket);
-		String list = new String(dgPacket.getData(), dgPacket.getOffset(),
-				dgPacket.getLength());
-		String [] l = list.split("|");
-		for (int i=0; i<l.length; i++){
-			String[] temp = l[i].split(":");
+		this.receive();
+		String [] list = this.receive().split("|");
+		for (int i=0; i<list.length; i++){
+			String[] temp = list[i].split(":");
 			this.peers.add(new PeerInfo(temp[0],temp[1],temp[2]));
 		}
-		byte[] buff = new byte[_dgLength];
-		dgPacket = new DatagramPacket(buff, _dgLength);
-		dgSocket.receive(dgPacket);
-		String files = new String(dgPacket.getData(), dgPacket.getOffset(),
-				dgPacket.getLength());
-		String [] temp = files.split("|");
-		for (int i=0; i<temp.length; i+=3){
-			this.fichiers.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), temp[i+2]));
+		String [] files = this.receive().split("|");
+		for (int i=0; i<files.length; i+=3){
+			this.fichiers.add(new Fichier(files[i], Integer.parseInt(files[i+1]), files[i+2]));
 		}
 	}
 	
-	/** A voir
-	 * Methode permettant d'envoyer des nouveaux fichiers au serveur
-	 * @param files les nouveaux fichiers a envoyer 
+	/**
+	 * Methode permettant d'ajouter des fichiers au reseau
+	 * @param files les nouveaux fichiers a ajouter 
 	 * @throws IOException
 	 */
-	private void sendFiles(ArrayList<File> files)
+	private void sendNewFiles(ArrayList<File> files)
 			throws IOException {
 		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
 		for (File f : files){
 			outfiles.add(new Fichier(f, this.uuid));
 		}
-		String msg = "FILE:";
+		String msg = "NEWFILE:";
 		for (Fichier g: outfiles){
-			msg+=g.getName()+"|"+g.getHashcode()+"|";
+			this.fichiers.add(g);
+			msg+=g.toStringWithOutUuid();
 		}
-		msg+="END";
-		byte[] buffer = msg.getBytes();
-		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
-		dgPacket.setAddress(this.address);
-		dgPacket.setPort(this.port);
-		dgSocket.send(dgPacket);
+		msg.substring(0, msg.length()-1);
+		this.send(msg, this.address, this.port);
 	}
-	
-	/** A voir
-	 * Methode permettant la reception des nouveaux fichiers mis sur le serveur
+
+	/**
+	 * Methode permettant de supprimer des fichiers du reseau
+	 * @param files les nouveaux fichiers a envoyer 
 	 * @throws IOException
 	 */
-	private void receiveFiles()
+	private void sendRemoveFiles(ArrayList<File> files)
 			throws IOException {
-		byte[] buf = new byte[_dgLength];
-		dgPacket = new DatagramPacket(buf, _dgLength);
-		dgSocket.receive(dgPacket);
-		byte[] buffer = new byte[_dgLength];
-		dgPacket = new DatagramPacket(buffer, _dgLength);
-		dgSocket.receive(dgPacket);
-		String list = new String(dgPacket.getData(), dgPacket.getOffset(),
-				dgPacket.getLength());
-		list = list.substring(5);
-		String [] files = list.split("|");
-		ArrayList<Fichier> out= new ArrayList<Fichier>();
-		for (int i=0; i<files.length-1; i+=3){
-			out.add(new Fichier(files[i], Integer.parseInt(files[i+1]), files[i+2]));
+		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
+		for (File f : files){
+			outfiles.add(new Fichier(f, this.uuid));
+		}
+		String msg = "RMVFILE:";
+		for (Fichier g: outfiles){
+			for (int i=0; i<this.fichiers.size(); i++){
+				if (g.compareTo(this.fichiers.get(i))==0){
+					msg+=g.toStringWithOutUuid();
+					this.fichiers.remove(i);
+				}
+			}
+		}
+		msg.substring(0, msg.length()-1);
+		this.send(msg, this.address, this.port);
+	}
+	
+	/** 
+	 * Methode permettant la reception de changement de fichier Add/Remove ou ajout de pairs
+	 * @throws IOException
+	 */
+	private void receiveChange()
+			throws IOException {
+		String[] change = this.receive().split(":");
+		String[] list = change[1].split("|");
+		switch (change[0]){
+		case "NEWFILE":
+			for (int i=0; i<list.length; i+=3){
+				this.fichiers.add(new Fichier(list[i], Integer.parseInt(list[i+1]), list[i+2]));
+			}
+			break;
+		case "RMVFILE":
+			for (int i=0; i<list.length; i+=3){
+				Fichier f = new Fichier(list[i], Integer.parseInt(list[i+1]), list[i+2]);
+				for (int j=0; j<this.fichiers.size(); j++){
+					if (f.compareTo(this.fichiers.get(j))==0){
+						this.fichiers.remove(j);
+					}
+				}
+			}
+			break;
+		case "NEWPEER":
+			for (int i=0; i<list.length; i+=3){
+				this.peers.add(new PeerInfo(list[i],list[i+1],list[i+2]));
+			}
+			break;
 		}
 	}
 	
@@ -221,6 +219,6 @@ public class Client {
 		client.receiveUuid();
 		client.initInformations();
 		client.receiveList();
-
+		client.receiveChange();
 	}
 }
