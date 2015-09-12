@@ -15,11 +15,15 @@ public class Client {
 	private String uuid;
 	private InetAddress address;
 	private Integer port;
+	private ArrayList<Fichier> fichiers;
+	private ArrayList<PeerInfo> peers;
 
 	public Client(InetAddress address, Integer port) throws IOException {
 		dgSocket = new DatagramSocket();
 		this.address = address;
 		this.port = port;
+		this.fichiers = new ArrayList<Fichier>();
+		this.peers = new ArrayList<PeerInfo>();
 	}
 
 	private String receive() throws IOException {
@@ -84,7 +88,7 @@ public class Client {
 		dgSocket.send(dgPacket);
 	}
 	
-	private void sendList()			
+	private void initInformations()			
 			throws IOException {
 		String msg = "RTRV:"+this.uuid;
 		byte[] buffer = msg.getBytes();
@@ -94,7 +98,7 @@ public class Client {
 		dgSocket.send(dgPacket);
 	}
 
-	private String[] receiveList()
+	private void receiveList()
 			throws IOException {
 		byte[] buf = new byte[_dgLength];
 		dgPacket = new DatagramPacket(buf, _dgLength);
@@ -105,7 +109,19 @@ public class Client {
 		String list = new String(dgPacket.getData(), dgPacket.getOffset(),
 				dgPacket.getLength());
 		String [] l = list.split("|");
-		return l;
+		for (int i=0; i<l.length; i++){
+			String[] temp = l[i].split(":");
+			this.peers.add(new PeerInfo(temp[0],temp[1],temp[2]));
+		}
+		byte[] buff = new byte[_dgLength];
+		dgPacket = new DatagramPacket(buff, _dgLength);
+		dgSocket.receive(dgPacket);
+		String files = new String(dgPacket.getData(), dgPacket.getOffset(),
+				dgPacket.getLength());
+		String [] temp = files.split("|");
+		for (int i=0; i<temp.length; i+=3){
+			this.fichiers.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), temp[i+2]));
+		}
 	}
 	
 	private void sendFiles(ArrayList<File> files)
@@ -151,12 +167,8 @@ public class Client {
 		Client client = new Client(InetAddress.getByName("localhost"), 5001);
 		client.register();
 		client.receiveUuid();
-		client.sendList();
+		client.initInformations();
 		client.receiveList();
-		Client client2 = new Client(InetAddress.getByName("localhost"), 5001);
-		client2.register();
-		client2.receiveUuid();
-		client2.sendList();
-		client2.receiveList();
+
 	}
 }

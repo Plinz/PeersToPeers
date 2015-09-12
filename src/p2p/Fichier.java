@@ -2,7 +2,7 @@ package p2p;
 
 import java.io.File;
 
-public class Fichier {
+public class Fichier{
 	private int hashcode;
 	private String name;
 	private String uuid;
@@ -47,5 +47,12 @@ public class Fichier {
 		String msg = this.getName() + "|" + this.getHashcode() + "|"
 				+ this.getUuid() + "|";
 		return msg;
+	}
+
+	public int compareTo(Fichier f) {
+		if (this.hashcode==f.getHashcode() && this.name==f.getName() && this.uuid==f.getUuid()){
+			return 0;
+		}
+		return -1;
 	}
 }

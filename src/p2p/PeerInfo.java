@@ -1,6 +1,7 @@
 package p2p;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.UUID;
 
 public class PeerInfo {
@@ -12,6 +13,17 @@ public class PeerInfo {
 		this.uuid = UUID.randomUUID();
 		this.address = address;
 		this.port = port;
+	}
+	
+	public PeerInfo(String uuid, String address, String port){
+		try {
+			this.address = InetAddress.getByName(address);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.uuid = UUID.fromString(uuid);
+		this.port = Integer.parseInt(port);
 	}
 
 	public InetAddress getAddress() {

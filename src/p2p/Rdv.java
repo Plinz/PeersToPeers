@@ -48,6 +48,7 @@ public class Rdv {
     public Rdv() throws IOException {
     	dgSocket = new DatagramSocket(_pSrv);
     	peers = new Hashtable<String, PeerInfo>();
+    	fichiers = new ArrayList<Fichier>();
     }
     
     /**
@@ -81,10 +82,9 @@ public class Rdv {
         						send(address, port, sizeAnswer.toString());
         					}
         		    		send(address, port, answer);
-        		    		msg = "INITFILE:";
         		    		for (int i=0; i<this.fichiers.size(); i++) 		    			
         		    			msg+= this.fichiers.get(i).toString();
-        		    		msg+="END";
+        		    		msg.substring(0, msg.length()-1);
         		    		send(address, port, msg);
     						break;
     					case "NEWFILE" :
