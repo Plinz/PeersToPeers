@@ -18,6 +18,12 @@ public class Client {
 	private ArrayList<Fichier> fichiers;
 	private ArrayList<PeerInfo> peers;
 
+	/**
+	 * Constructeur d'un client
+	 * @param address adresse du client
+	 * @param port numero de port du client
+	 * @throws IOException
+	 */
 	public Client(InetAddress address, Integer port) throws IOException {
 		dgSocket = new DatagramSocket();
 		this.address = address;
@@ -26,6 +32,11 @@ public class Client {
 		this.peers = new ArrayList<PeerInfo>();
 	}
 
+	/**
+	 * Methode permettant de recevoir un message du serveur
+	 * @return
+	 * @throws IOException
+	 */
 	private String receive() throws IOException {
 		byte[] buffer = new byte[_dgLength];
 		dgPacket = new DatagramPacket(buffer, _dgLength);
@@ -35,6 +46,10 @@ public class Client {
 
 	}
 	
+	/**
+	 * Reception de la confirmation du serveur du quittage
+	 * @throws IOException
+	 */
 	private void receiveQuit() throws IOException {
 		byte[] buffer = new byte[_dgLength];
 		dgPacket = new DatagramPacket(buffer, _dgLength);
@@ -48,6 +63,10 @@ public class Client {
 		}
 	}
 	
+	/**
+	 * Reception de l'identifiant unique
+	 * @throws IOException
+	 */
 	private void receiveUuid() throws IOException {
 		byte[] buffer = new byte[_dgLength];
 		dgPacket = new DatagramPacket(buffer, _dgLength);
@@ -58,7 +77,13 @@ public class Client {
 		System.out.println(uuid + "\n");
 	}
 
-
+	/**
+	 * Methode permettant d'envoyer un message au serveur en UDP
+	 * @param msg message a envoyer
+	 * @param address adresse du serveur
+	 * @param port numero de port du serveur
+	 * @throws IOException
+	 */
 	private void send(String msg, InetAddress address, int port)
 			throws IOException {
 		byte[] buffer = msg.getBytes();
@@ -68,6 +93,10 @@ public class Client {
 		dgSocket.send(dgPacket);
 	}
 
+	/**
+	 * Demande de quittage du reseau au serveur
+	 * @throws IOException
+	 */
 	private void sendQuit()
 			throws IOException {
 		String msg = "QUIT:"+this.uuid;
@@ -78,6 +107,10 @@ public class Client {
 		dgSocket.send(dgPacket);
 	}
 
+	/**
+	 * Demande d'identifiant au serveur
+	 * @throws IOException
+	 */
 	private void register()
 			throws IOException {
 		String msg = "RGTR";
@@ -88,6 +121,10 @@ public class Client {
 		dgSocket.send(dgPacket);
 	}
 	
+	/**
+	 * Demande des liste des pairs et des fichiers au serveur
+	 * @throws IOException
+	 */
 	private void initInformations()			
 			throws IOException {
 		String msg = "RTRV:"+this.uuid;
@@ -98,6 +135,10 @@ public class Client {
 		dgSocket.send(dgPacket);
 	}
 
+	/**
+	 * Reception de la liste des pairs et des fichiers
+	 * @throws IOException
+	 */
 	private void receiveList()
 			throws IOException {
 		byte[] buf = new byte[_dgLength];
@@ -124,6 +165,11 @@ public class Client {
 		}
 	}
 	
+	/** A voir
+	 * Methode permettant d'envoyer des nouveaux fichiers au serveur
+	 * @param files les nouveaux fichiers a envoyer 
+	 * @throws IOException
+	 */
 	private void sendFiles(ArrayList<File> files)
 			throws IOException {
 		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
@@ -142,7 +188,11 @@ public class Client {
 		dgSocket.send(dgPacket);
 	}
 	
-	private ArrayList<Fichier> receiveFiles()
+	/** A voir
+	 * Methode permettant la reception des nouveaux fichiers mis sur le serveur
+	 * @throws IOException
+	 */
+	private void receiveFiles()
 			throws IOException {
 		byte[] buf = new byte[_dgLength];
 		dgPacket = new DatagramPacket(buf, _dgLength);
@@ -158,11 +208,13 @@ public class Client {
 		for (int i=0; i<files.length-1; i+=3){
 			out.add(new Fichier(files[i], Integer.parseInt(files[i+1]), files[i+2]));
 		}
-		return out;
 	}
 	
-
-	
+	/**
+	 * Suite d'instruction lancant un client
+	 * @param args String Adresse + int port
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
 		Client client = new Client(InetAddress.getByName("localhost"), 5001);
 		client.register();
