@@ -14,7 +14,7 @@ public class Rdv {
 	/**
 	 * Port du Serveur
 	 */
-	private static final  int _pSrv = 5001;
+	private static final  int _pSrv = 4242;
 	
 	/**
 	 * Longeur d'un buffer
