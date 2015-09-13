@@ -19,7 +19,7 @@ public class Rdv {
 	/**
 	 * Longeur d'un buffer
 	 */
-	private static final int _bfLength = 41;
+	private static final int _bfLength = 1500;
 	
 	/**
 	 * Table des pairs connectes sur le reseau
@@ -60,6 +60,7 @@ public class Rdv {
     		DatagramPacket dgPacket = receive();
     		
     		String msg = new String(dgPacket.getData(), dgPacket.getOffset(), dgPacket.getLength());
+    		System.out.println(msg);
     		InetAddress address = dgPacket.getAddress();
     		int port = dgPacket.getPort();
     		String answer = null;
@@ -70,7 +71,7 @@ public class Rdv {
         		send(address, port, answer);
     		}
     		else {
-    			String[] words = msg.split(":");
+    			String[] words = msg.split("[:]");
     			if ( words.length >= 2 ) {
     				switch (words[0]) {
     					case "RTRV" :
@@ -164,15 +165,16 @@ public class Rdv {
      * @param uuid l'identifiant du pair possedant les nouveau fichiers
      */
 	private void notifyPeersAddFiles (String files, String uuid){
-		String [] temp = files.split("|");
-		ArrayList<Fichier> fichiers = new ArrayList<Fichier>();
+		String [] temp = files.split("[|]");
+		ArrayList<Fichier> fich = new ArrayList<Fichier>();
 		for (int i=0; i<temp.length; i+=2){
-			fichiers.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid));
+			fich.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid));
+			this.fichiers.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid));
 		}
 
 		String msg = "NEWFILE:";
-		for (int i=0; i<fichiers.size(); i++){
-			msg+=fichiers.get(i).toString();
+		for (int i=0; i<fich.size(); i++){
+			msg+=fich.get(i).toString();
 		}
 		msg.substring(0, msg.length()-1);
 		Enumeration<PeerInfo> p = peers.elements();

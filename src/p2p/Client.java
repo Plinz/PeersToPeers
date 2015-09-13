@@ -12,13 +12,14 @@ import java.util.Hashtable;
 
 public class Client {
 
-	private final static int _dgLength = 50;
+	private final static int _dgLength = 1500;
 	private DatagramSocket dgSocket;
 	private DatagramPacket dgPacket;
 	private String uuid;
 	private InetAddress address;
 	private Integer port;
 	public ArrayList<Fichier> fichiers;
+	public ArrayList<Fichier> ownFichiers;
 	public Hashtable<String, PeerInfo> peers;
 
 	/**
@@ -39,8 +40,7 @@ public class Client {
 		this.address = address;
 		this.port = port;
 		this.fichiers = new ArrayList<Fichier>();
-		this.fichiers.add(new Fichier("name", 55555, "5Fd25Sfr5"));
-		this.fichiers.add(new Fichier("film", 42424242, "564fZEF2"));
+		this.ownFichiers = new ArrayList<Fichier>();
 		this.peers = new Hashtable<String, PeerInfo>();
 	}
 
@@ -180,7 +180,7 @@ public class Client {
 		for (int i = 0; list.length > 2 && i < list.length; i += 3) {
 			this.peers.put(list[i], new PeerInfo(list[i], list[i + 1], list[i + 2]));
 		}
-
+		
 		String[] files = this.receive().split("[|]");
 		for (int i = 0; files.length > 2 && i < files.length; i += 3) {
 			this.fichiers.add(new Fichier(files[i], Integer
@@ -196,14 +196,14 @@ public class Client {
 	 *            les nouveaux fichiers a ajouter
 	 * @throws IOException
 	 */
-	private int sendNewFiles(ArrayList<File> files) throws IOException {
+	public int sendNewFiles(ArrayList<File> files) throws IOException {
 		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
 		for (File f : files) {
 			outfiles.add(new Fichier(f, this.uuid));
 		}
-		String msg = "NEWFILE:";
+		String msg = "NEWFILE:"+this.uuid+":";
 		for (Fichier g : outfiles) {
-			this.fichiers.add(g);
+			this.ownFichiers.add(g);
 			msg += g.toStringWithOutUuid();
 		}
 		msg.substring(0, msg.length() - 1);
@@ -217,17 +217,17 @@ public class Client {
 	 *            les nouveaux fichiers a envoyer
 	 * @throws IOException
 	 */
-	private int sendRemoveFiles(ArrayList<File> files) throws IOException {
+	public int sendRemoveFiles(ArrayList<File> files) throws IOException {
 		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
 		for (File f : files) {
 			outfiles.add(new Fichier(f, this.uuid));
 		}
-		String msg = "RMVFILE:";
+		String msg = "RMVFILE:"+this.uuid+":";
 		for (Fichier g : outfiles) {
 			for (int i = 0; i < this.fichiers.size(); i++) {
 				if (g.compareTo(this.fichiers.get(i)) == 0) {
 					msg += g.toStringWithOutUuid();
-					this.fichiers.remove(i);
+					this.ownFichiers.remove(i);
 				}
 			}
 		}
