@@ -1,5 +1,5 @@
-conteneur:
-    image: Plinz/PeersToPeers
+serveur:
+    image: plinz/peerstopeers
     ports:
     - ip: 178.32.240.91
       host_port: 5000
