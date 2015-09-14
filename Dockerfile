@@ -5,4 +5,4 @@ run apt-get update && \
 workdir /srv/PeersToPeers/
 add src /srv/PeersToPeers/src/
 expose 5001
-cmd javac p2p/*; java p2p.Rdv
+cmd javac *.java; java p2p.Rdv
