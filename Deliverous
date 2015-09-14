@@ -1,6 +1,6 @@
 conteneur:
     image: Plinz/PeersToPeers
     ports:
-    - ip: 178.32.240.90
+    - ip: 178.32.240.91
       host_port: 5000
       container_port: 5001
