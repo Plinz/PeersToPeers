@@ -1,0 +1,6 @@
+conteneur:
+    image: dowan/PeersToPeers
+    ports:
+    - ip: 178.32.240.90
+      host_port: 80
+      container_port: 8080
