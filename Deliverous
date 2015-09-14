@@ -1,5 +1,5 @@
 conteneur:
-    image: dowan/PeersToPeers
+    image: Plinz/PeersToPeers
     ports:
     - ip: 178.32.240.90
       host_port: 80
