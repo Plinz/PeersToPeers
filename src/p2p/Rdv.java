@@ -301,8 +301,8 @@ public class Rdv {
 		}	
 	}
 
-	public static void main(String[] args) throws IOException {
-		new Rdv(args[0], args[1]).serve();
+	public static void main() throws IOException {
+		new Rdv("137.70.24.981", "5000").serve();
 	}
 
 }
