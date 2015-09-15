@@ -5,4 +5,6 @@ run apt-get update && \
 workdir /srv/peerstopeers/
 add src /srv/peerstopeers/src/
 expose 5001
-cmd javac /srv/peerstopeers/src/p2p/*.java; java /srv/peerstopeers/src/p2p/Rdv
+cmd javac /srv/peerstopeers/src/p2p/*.java
+cmd cd /srv/peerstopeers/src/
+cmd java p2p.Rdv
