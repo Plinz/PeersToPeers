@@ -8,5 +8,5 @@ ADD src /srv/peerstopeers/src/
 EXPOSE 5001
 CMD javac /srv/peerstopeers/src/test.java
 CMD cd /srv/peerstopeers/src
-CMD ls "-la"
-CMD java test
+CMD ls -la
+CMD java "test"
