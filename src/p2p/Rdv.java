@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.UUID;
 
 public class Rdv {
 	
