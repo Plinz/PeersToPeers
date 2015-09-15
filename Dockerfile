@@ -1,10 +1,12 @@
-from debian 
-run apt-get update && \
+FROM debian 
+RUN apt-get update && \
     apt-get install -y  openjdk-7-jdk && \
     apt-get clean 
-workdir /srv/peerstopeers/
-add src /srv/peerstopeers/src/
-expose 5001
-cmd javac /srv/peerstopeers/src/p2p/*.java
-cmd cd /srv
-cmd java peerstopeers.src.p2p.Rdv
+ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
+WORKDIR /srv/peerstopeers/src
+ADD src /srv/peerstopeers/src/
+EXPOSE 5001
+CMD javac /srv/peerstopeers/src/test.java
+CMD cd /srv/peerstopeers/src
+CMD ls -la
+CMD java "test"
