@@ -13,8 +13,9 @@ public class Rdv {
 	/**
 	 * Port du Serveur
 	 */
-	private static final  int _pSrv = 4242;
-	
+//	private static final  int _pSrv = 4242;
+
+
 	/**
 	 * Longeur d'un buffer
 	 */
@@ -44,8 +45,8 @@ public class Rdv {
 	 * Constructeur du serveur 
 	 * @throws IOException
 	 */
-    public Rdv() throws IOException {
-    	dgSocket = new DatagramSocket(_pSrv);
+    public Rdv(String addr, String port) throws IOException {
+    	dgSocket = new DatagramSocket(Integer.parseInt(port), InetAddress.getByName(addr));
     	peers = new Hashtable<String, PeerInfo>();
     	fichiers = new ArrayList<Fichier>();
     }
@@ -301,7 +302,7 @@ public class Rdv {
 	}
 
 	public static void main(String[] args) throws IOException {
-		new Rdv().serve();
+		new Rdv(args[0], args[1]).serve();
 	}
 
 }
