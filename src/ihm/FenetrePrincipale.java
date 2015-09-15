@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Stack;
 
 import javax.swing.DefaultListModel;
@@ -29,7 +31,7 @@ import javax.swing.event.ListSelectionListener;
 import p2p.Client;
 import p2p.Fichier;
 
-public class FenetrePrincipale extends JPanel {
+public class FenetrePrincipale extends JPanel implements Observer{
 
 	private static final long serialVersionUID = 1L;
 
@@ -195,5 +197,23 @@ public class FenetrePrincipale extends JPanel {
 		parent.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+	}
+	
+	public void updateOtherFiles (){
+		for (int i=0; i<this.client.fichiers.size(); i++){
+			modelOther.addElement(this.client.fichiers.get(i).getName());
+		}
+	}
+
+	@Override
+	public void update(Observable obs, Object txt) {
+		if (obs instanceof p2p.Client){
+			if (txt.toString().equals("file")){
+				this.updateOtherFiles();
+			}
+			else{
+				System.out.println("update affichage peers");
+			}
+		}
 	}
 }

@@ -9,8 +9,9 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Observable;
 
-public class Client {
+public class Client extends Observable{
 
 	private final static int _dgLength = 1500;
 	private DatagramSocket dgSocket;
@@ -250,9 +251,11 @@ public class Client {
 		switch (change[0]) {
 		case "NEWFILE":
 			for (int i = 0; i < list.length; i += 3) {
+				
 				this.fichiers.add(new Fichier(list[i], Integer
 						.parseInt(list[i + 1]), list[i + 2]));
 			}
+			this.notifyObservers("file");
 			break;
 		case "RMVFILE":
 			for (int i = 0; i < list.length; i += 3) {
@@ -264,14 +267,17 @@ public class Client {
 					}
 				}
 			}
+			this.notifyObservers("file");
 			break;
 		case "NEWPEER":
 			for (int i = 0; i < list.length; i += 3) {
 				this.peers.put(list[i], new PeerInfo(list[i], list[i + 1], list[i + 2]));
 			}
+			this.notifyObservers("peer");
 			break;
 		case "RMVPEER":
 			this.peers.remove(change[1]);
+			this.notifyObservers("peer");
 			break;
 		}
 		return 1;
