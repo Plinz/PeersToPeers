@@ -1,25 +1,25 @@
 package p2p;
 
+import ihm.FenetrePrincipale;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Observable;
 
-public class Client extends Observable{
+public class Client{
 
 	private final static int _dgLength = 1500;
 	private DatagramSocket dgSocket;
 	private DatagramPacket dgPacket;
-	private String uuid;
+	public String uuid;
 	private InetAddress address;
 	private Integer port;
-	public ArrayList<Fichier> fichiers;
+	public ArrayList<Fichier> otherFichiers;
 	public ArrayList<Fichier> ownFichiers;
 	public Hashtable<String, PeerInfo> peers;
 
@@ -40,7 +40,7 @@ public class Client extends Observable{
 		}
 		this.address = address;
 		this.port = port;
-		this.fichiers = new ArrayList<Fichier>();
+		this.otherFichiers = new ArrayList<Fichier>();
 		this.ownFichiers = new ArrayList<Fichier>();
 		this.peers = new Hashtable<String, PeerInfo>();
 	}
@@ -60,22 +60,14 @@ public class Client extends Observable{
 	 * @return
 	 * @throws IOException
 	 */
-	private String receive() {
+	public String receive() {
 		byte[] buffer = new byte[_dgLength];
 		dgPacket = new DatagramPacket(buffer, _dgLength);
 		try {
-			dgSocket.setSoTimeout(1000);
-			try {
-				dgSocket.receive(dgPacket);
-			} catch (SocketTimeoutException e) {
-				return null;
-			}
-		} catch (SocketException e1) {
-			e1.printStackTrace();
-		} catch (IOException e){
-			e.printStackTrace();
+			dgSocket.receive(dgPacket);
+		} catch (IOException e) {
+			return null;
 		}
-
 		return new String(dgPacket.getData(), dgPacket.getOffset(),
 				dgPacket.getLength());
 
@@ -184,7 +176,7 @@ public class Client extends Observable{
 		
 		String[] files = this.receive().split("[|]");
 		for (int i = 0; files.length > 2 && i < files.length; i += 3) {
-			this.fichiers.add(new Fichier(files[i], Integer
+			this.otherFichiers.add(new Fichier(files[i], Integer
 					.parseInt(files[i + 1]), files[i + 2]));
 		}
 		return 1;
@@ -225,8 +217,8 @@ public class Client extends Observable{
 		}
 		String msg = "RMVFILE:"+this.uuid+":";
 		for (Fichier g : outfiles) {
-			for (int i = 0; i < this.fichiers.size(); i++) {
-				if (g.compareTo(this.fichiers.get(i)) == 0) {
+			for (int i = 0; i < this.ownFichiers.size(); i++) {
+				if (g.compareTo(this.ownFichiers.get(i)) == 0) {
 					msg += g.toStringWithOutUuid();
 					this.ownFichiers.remove(i);
 				}
@@ -242,45 +234,9 @@ public class Client extends Observable{
 	 * 
 	 * @throws IOException
 	 */
-	private int receiveChange() throws IOException {
-		String reponse = this.receive();
-		if (reponse == null)
-			return 0;
-		String[] change = reponse.split(":");
-		String[] list = change[1].split("[|]");
-		switch (change[0]) {
-		case "NEWFILE":
-			for (int i = 0; i < list.length; i += 3) {
-				
-				this.fichiers.add(new Fichier(list[i], Integer
-						.parseInt(list[i + 1]), list[i + 2]));
-			}
-			this.notifyObservers("file");
-			break;
-		case "RMVFILE":
-			for (int i = 0; i < list.length; i += 3) {
-				Fichier f = new Fichier(list[i], Integer.parseInt(list[i + 1]),
-						list[i + 2]);
-				for (int j = 0; j < this.fichiers.size(); j++) {
-					if (f.compareTo(this.fichiers.get(j)) == 0) {
-						this.fichiers.remove(j);
-					}
-				}
-			}
-			this.notifyObservers("file");
-			break;
-		case "NEWPEER":
-			for (int i = 0; i < list.length; i += 3) {
-				this.peers.put(list[i], new PeerInfo(list[i], list[i + 1], list[i + 2]));
-			}
-			this.notifyObservers("peer");
-			break;
-		case "RMVPEER":
-			this.peers.remove(change[1]);
-			this.notifyObservers("peer");
-			break;
-		}
-		return 1;
+	public void receiveChange(FenetrePrincipale f) throws IOException {
+		Thread t = new Thread(new ThreadClient(this, f));
+		t.start();
 	}
 	
 
@@ -297,6 +253,5 @@ public class Client extends Observable{
 		client.receiveUuid();
 		client.initInformations();
 		client.receiveList();
-		client.receiveChange();
 	}
 }

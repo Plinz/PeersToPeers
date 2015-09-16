@@ -48,7 +48,11 @@ public class PeerInfo {
 
 	@Override
 	public String toString() {
-		return uuid + "|" + address + "|" + port;
+		return uuid + ":" + address + "|" + port;
+	}
+	
+	public String toStringWithOutUuid(){
+		return address + "|" + port;
 	}
 
 	@Override

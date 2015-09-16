@@ -146,7 +146,7 @@ public class Rdv {
     		while ( p.hasMoreElements() ) {
     			PeerInfo peer = p.nextElement();
     			if ( ! peer.getUUID().toString().equals(uuid) ) {
-    				sb.append(peer.toString()); 
+    				sb.append(peer.getUUID().toString()+ "|" +peer.toStringWithOutUuid()); 
     				sb.append("|");
     			}
     		}
@@ -172,15 +172,18 @@ public class Rdv {
 			this.fichiers.add(new Fichier(temp[i], Integer.parseInt(temp[i+1]), uuid));
 		}
 
-		String msg = "NEWFILE:";
+		String msg = "NEWFILE:"+uuid+":";
 		for (int i=0; i<fich.size(); i++){
-			msg+=fich.get(i).toString();
+			msg+= fich.get(i).toStringWithOutUuid();
 		}
 		msg.substring(0, msg.length()-1);
 		Enumeration<PeerInfo> p = peers.elements();
 		while ( p.hasMoreElements() ) {
 			PeerInfo peer = p.nextElement();
-			if (! peer.getUUID().equals(uuid)){
+			System.out.println(peer.getUUID().toString());
+			System.out.println(uuid);
+			if (! peer.getUUID().toString().equals(uuid)){
+				System.out.println("ok");
 				try {
 					send(peer.getAddress(), peer.getPort(), msg);
 				} catch (IOException e) {
@@ -208,15 +211,15 @@ public class Rdv {
 				}
 			}
 		}
-		String msg = "RMVFILE:";
+		String msg = "RMVFILE:"+uuid;
 		for (int i=0; i<fichiers.size(); i++){
-			msg+=fichiers.get(i).toString();
+			msg+=fichiers.get(i).toStringWithOutUuid();
 		}
 		msg.substring(0, msg.length()-1);
 		Enumeration<PeerInfo> p = peers.elements();
 		while ( p.hasMoreElements() ) {
 			PeerInfo peer = p.nextElement();
-			if (! peer.getUUID().equals(uuid)){
+			if (! peer.getUUID().toString().equals(uuid)){
 				try {
 					send(peer.getAddress(), peer.getPort(), msg);
 				} catch (IOException e) {
@@ -293,7 +296,7 @@ public class Rdv {
 	 * @throws IOException
 	 */
 	private void notifyAddPeers(PeerInfo newPeer) throws IOException {
-		String msg = "NEWPEER:" + newPeer.toString();
+		String msg = "NEWPEER:" + newPeer.getUUID().toString() + "|" +newPeer.toString();
 		Enumeration<PeerInfo> p = peers.elements();
 		while ( p.hasMoreElements() ) {
 			PeerInfo peer = p.nextElement();

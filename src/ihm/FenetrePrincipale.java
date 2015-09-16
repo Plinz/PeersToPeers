@@ -58,6 +58,7 @@ public class FenetrePrincipale extends JPanel implements Observer{
 	private Client client;
 
 	public FenetrePrincipale(JFrame frame, Client cl) throws IOException {
+		cl.receiveChange(this);
 		this.setLayout(new BorderLayout());
 		this.client = cl;
 		this.setPreferredSize(new Dimension(1200, 1200));
@@ -65,8 +66,8 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		
 		modelOther = new DefaultListModel<String>();
 		this.fichiersOther = new JList<String>(modelOther);
-		for (int i=0; i<this.client.fichiers.size(); i++){
-			modelOther.addElement(this.client.fichiers.get(i).getName());
+		for (int i=0; i<this.client.otherFichiers.size(); i++){
+			modelOther.addElement(this.client.otherFichiers.get(i).getName());
 		}
 		
 		modelOwn = new DefaultListModel<String>();
@@ -102,6 +103,7 @@ public class FenetrePrincipale extends JPanel implements Observer{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+		        modelOwn.removeAllElements();
 				for (int i=0; i<client.ownFichiers.size(); i++){
 					modelOwn.addElement(client.ownFichiers.get(i).getName());
 				}			
@@ -134,7 +136,7 @@ public class FenetrePrincipale extends JPanel implements Observer{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-		        System.out.println("size : "+client.ownFichiers.size());
+		        modelOwn.removeAllElements();
 				for (int i=0; i<client.ownFichiers.size(); i++){
 					modelOwn.addElement(client.ownFichiers.get(i).getName());
 				}
@@ -152,7 +154,7 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		this.fichiersOther.addListSelectionListener(new ListSelectionListener(){
 			public void valueChanged (ListSelectionEvent e) { 
 				if(!e.getValueIsAdjusting()){
-			      Fichier f = client.fichiers.get(fichiersOther.getSelectedIndex());
+			      Fichier f = client.otherFichiers.get(fichiersOther.getSelectedIndex());
 			      name.setText("Name : "+f.getName());
 			      hash.setText("Hash : "+f.getHashcode());
 			      uuid.setText("UUID : "+f.getUuid());
@@ -200,15 +202,19 @@ public class FenetrePrincipale extends JPanel implements Observer{
 	}
 	
 	public void updateOtherFiles (){
-		for (int i=0; i<this.client.fichiers.size(); i++){
-			modelOther.addElement(this.client.fichiers.get(i).getName());
+		System.out.println("2");
+		modelOther.removeAllElements();
+		for (int i=0; i<this.client.otherFichiers.size(); i++){
+			modelOther.addElement(this.client.otherFichiers.get(i).getName());
 		}
+		
 	}
 
 	@Override
 	public void update(Observable obs, Object txt) {
-		if (obs instanceof p2p.Client){
+		if (obs instanceof p2p.ThreadClient){
 			if (txt.toString().equals("file")){
+				System.out.println("1");
 				this.updateOtherFiles();
 			}
 			else{
