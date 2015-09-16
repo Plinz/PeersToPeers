@@ -46,7 +46,7 @@ public class Rdv {
 	 * @throws IOException
 	 */
     public Rdv(String addr, String port) throws IOException {
-    	dgSocket = new DatagramSocket(Integer.parseInt(port), InetAddress.getByName(addr));
+    	dgSocket = new DatagramSocket(Integer.parseInt(port));
     	peers = new Hashtable<String, PeerInfo>();
     	fichiers = new ArrayList<Fichier>();
     }
