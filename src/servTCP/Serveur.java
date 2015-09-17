@@ -13,7 +13,7 @@ public class Serveur{
     	this.sv = new ServerSocket(port);
     	this.sock = sv.accept();
     	ThreadServeur ts = new ThreadServeur(sock, fichier);
-    	ts.run();  
+    	ts.start();  
     	sock.close();
     	sv.close();
     }

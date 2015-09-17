@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class ThreadClient implements Runnable {
+public class ThreadClient extends Thread {
 	Socket s;
 	FileInputStream inf;
 	ObjectOutputStream out;
