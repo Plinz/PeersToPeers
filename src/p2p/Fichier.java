@@ -64,7 +64,7 @@ public class Fichier {
 		return -1;
 	}
 
-	public File getFile(String path) {
+	public File getFile() {
 		return new File(path);
 	}
 
