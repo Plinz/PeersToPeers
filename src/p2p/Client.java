@@ -8,8 +8,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import servTCP.Serveur;
 
 public class Client{
 
@@ -22,7 +25,8 @@ public class Client{
 	public ArrayList<Fichier> otherFichiers;
 	public ArrayList<Fichier> ownFichiers;
 	public Hashtable<String, PeerInfo> peers;
-
+	public Serveur serveur;
+	
 	/**
 	 * Constructeur d'un client
 	 * 
@@ -239,7 +243,19 @@ public class Client{
 		t.start();
 	}
 	
-
+	
+	public void runServeurTCP(){
+		try {
+			this.serveur = new Serveur(this.port, this);
+			this.serveur.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	
+	
+	
 	/**
 	 * Suite d'instruction lancant un client
 	 * 

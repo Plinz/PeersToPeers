@@ -1,21 +1,34 @@
 package servTCP;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
- 
-public class Serveur{
-    static Socket sock;
-    static ServerSocket sv;
-    public Serveur(int port, File fichier) throws UnknownHostException, IOException {
-    	this.sv = new ServerSocket(port);
-    	this.sock = sv.accept();
-    	ThreadServeur ts = new ThreadServeur(sock, fichier);
-    	ts.start();  
-    	sock.close();
-    	sv.close();
-    }
- 
+
+public class Serveur extends Thread {
+	static Socket sock;
+	static ServerSocket sv;
+	public p2p.Client client;
+
+	public Serveur(int port, p2p.Client c) throws UnknownHostException, IOException {
+		this.sv = new ServerSocket(port);
+		this.client = c;
+	}
+
+	public void run() {
+		try {
+			while (true) {
+				this.sock = sv.accept();
+				ThreadServeur ts = new ThreadServeur(sock, this.client);
+				ts.start();
+				sock.close();
+				sv.close();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 }
