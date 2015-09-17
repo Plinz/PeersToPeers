@@ -192,7 +192,7 @@ public class Client{
 	public int sendNewFiles(ArrayList<File> files) throws IOException {
 		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
 		for (File f : files) {
-			outfiles.add(new Fichier(f, this.uuid));
+			outfiles.add(new Fichier(f, this.uuid, f.getPath()));
 		}
 		String msg = "NEWFILE:"+this.uuid+":";
 		for (Fichier g : outfiles) {
@@ -213,7 +213,7 @@ public class Client{
 	public int sendRemoveFiles(ArrayList<File> files) throws IOException {
 		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
 		for (File f : files) {
-			outfiles.add(new Fichier(f, this.uuid));
+			outfiles.add(new Fichier(f, this.uuid, f.getPath()));
 		}
 		String msg = "RMVFILE:"+this.uuid+":";
 		for (Fichier g : outfiles) {
