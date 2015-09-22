@@ -1,5 +1,5 @@
 FROM java:7
-COPY . /usr/src
+ADD . /usr/peerstopeers
 WORKDIR /usr/src/peerstopeers/src
 RUN javac test.java
 CMD ["java", "test"]
