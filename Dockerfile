@@ -8,4 +8,4 @@ COPY . /srv
 WORKDIR /srv/peerstopeers/src
 EXPOSE 5001
 RUN javac /srv/peerstopeers/src/p2p/*.java
-CMD ["java"], "p2p.Rdv"]
+CMD ["java", "p2p.Rdv"]
