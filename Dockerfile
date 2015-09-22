@@ -4,9 +4,8 @@ RUN apt-get update && \
     apt-get install -y openjdk-7-jre && \
     apt-get clean 
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
+COPY . /srv
 WORKDIR /srv/peerstopeers/src
-ADD src /srv/peerstopeers/src/
 EXPOSE 5001
-CMD javac /srv/peerstopeers/src/p2p/*.java
-CMD cd /srv/peerstopeers/src
-CMD java p2p.Rdv
+RUN javac /srv/peerstopeers/src/p2p/*.java
+CMD ["java"], "p2p.Rdv"]
