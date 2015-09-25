@@ -147,10 +147,10 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		//JList des ownfichiers que l'on partage  WEST
 		this.panLeft = new JScrollPane(this.fichiersOwn);
 		
-		//JList des otherfichiers que l'on peut télécharger  CENTER
+		//JList des otherfichiers que l'on peut telecharger  CENTER
 		this.panCenter = new JScrollPane (this.fichiersOther);
 		
-		//Mise à jour de la barre d'etat
+		//Mise Ã  jour de la barre d'etat
 		this.fichiersOther.addListSelectionListener(new ListSelectionListener(){
 			public void valueChanged (ListSelectionEvent e) { 
 				if(!e.getValueIsAdjusting()){
