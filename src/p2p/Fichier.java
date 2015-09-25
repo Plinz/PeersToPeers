@@ -47,12 +47,12 @@ public class Fichier {
 
 	public String toString() {
 		String msg = this.getName() + "|" + this.getHashcode() + "|"
-				+ this.getUuid() + "|";
+				+ this.getUuid();
 		return msg;
 	}
 
 	public String toStringWithOutUuid() {
-		String msg = this.getName() + "|" + this.getHashcode() + "|";
+		String msg = this.getName() + "|" + this.getHashcode();
 		return msg;
 	}
 

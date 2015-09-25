@@ -19,47 +19,44 @@ public class ThreadClient extends Observable implements Runnable {
 		while (true) {
 			reponse = this.client.receive();
 			String[] change = reponse.split("[:]");
-			String[] list = change[2].split("[|]");
 			String uuid = change[1];
-			if (uuid.equals(this.client.uuid)) {
-				switch (change[0]) {
-				case "NEWFILE":
-					for (int i = 0; i < list.length; i += 3) {
-						client.otherFichiers.add(new Fichier(list[i], Integer
-								.parseInt(list[i + 1]), uuid));
-					}
-					System.out.println("recu :" + this.client.uuid);
-					System.out.println(reponse);
-					this.setChanged();
-					this.notifyObservers("file");
-					break;
-				case "RMVFILE":
-					for (int i = 0; i < list.length; i += 3) {
-						Fichier f = new Fichier(list[i],
-								Integer.parseInt(list[i + 1]), uuid);
-						for (int j = 0; j < client.otherFichiers.size(); j++) {
-							if (f.compareTo(client.otherFichiers.get(j)) == 0) {
-								client.otherFichiers.remove(j);
-							}
+			switch (change[0]) {
+			case "NEWFILE":
+				for (int i = 0; i < Integer.parseInt(change[1]); i++) {
+					String[] list = this.client.receive().split("[|]");
+					client.otherFichiers.add(new Fichier(list[1], Integer
+							.parseInt(list[2]), uuid));
+				}
+				this.setChanged();
+				this.notifyObservers("file");
+				break;
+	
+			case "RMVFILE":
+				for (int i = 0; i < Integer.parseInt(change[1]); i++) {
+					String[] list = this.client.receive().split("[|]");
+					Fichier f = new Fichier(list[1], Integer.parseInt(list[2]),
+							uuid);
+					for (int j = 0; j < client.otherFichiers.size(); j++) {
+						if (f.compareTo(client.otherFichiers.get(j)) == 0) {
+							client.otherFichiers.remove(j);
 						}
 					}
-					this.setChanged();
-					this.notifyObservers("file");
-					break;
-				case "NEWPEER":
-					for (int i = 0; i < list.length; i += 3) {
-						client.peers.put(list[i], new PeerInfo(uuid, list[i],
-								list[i + 1]));
-					}
-					this.setChanged();
-					this.notifyObservers("peer");
-					break;
-				case "RMVPEER":
-					client.peers.remove(change[1]);
-					this.setChanged();
-					this.notifyObservers("peer");
-					break;
 				}
+				this.setChanged();
+				this.notifyObservers("file");
+				break;
+
+			case "NEWPEER":
+				client.peers.put(uuid, new PeerInfo(uuid, change[2], change[3]));
+				this.setChanged();
+				this.notifyObservers("peer");
+				break;
+			
+			case "RMVPEER":
+				client.peers.remove(change[1]);
+				this.setChanged();
+				this.notifyObservers("peer");
+				break;
 			}
 		}
 	}

@@ -8,7 +8,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -74,7 +73,6 @@ public class Client{
 		}
 		return new String(dgPacket.getData(), dgPacket.getOffset(),
 				dgPacket.getLength());
-
 	}
 
 	/**
@@ -166,24 +164,21 @@ public class Client{
 	 * 
 	 * @throws IOException
 	 */
-	private int receiveList() throws IOException {
-		String reponse = this.receive();
-		if (reponse == null)
-			return 0;
-		reponse = this.receive();
-		if (reponse == null)
-			return 0;
-		String[] list = reponse.split("[|]");
-		for (int i = 0; list.length > 2 && i < list.length; i += 3) {
-			this.peers.put(list[i], new PeerInfo(list[i], list[i + 1], list[i + 2]));
+	private void receiveList() throws IOException {
+		String [] reponse = this.receive().split("[:]");
+		int nb = Integer.parseInt(reponse[1]);
+		for (int i=0; i<nb; i++){
+			String [] list = this.receive().split("[:]");
+			this.peers.put(list[0], new PeerInfo(list[0], list[1], list[2]));
 		}
-		
-		String[] files = this.receive().split("[|]");
-		for (int i = 0; files.length > 2 && i < files.length; i += 3) {
-			this.otherFichiers.add(new Fichier(files[i], Integer
-					.parseInt(files[i + 1]), files[i + 2]));
+
+		reponse = this.receive().split("[:]");
+		nb = Integer.parseInt(reponse[1]);
+		for (int i=0; i<nb; i++){
+			String [] list = this.receive().split("[:]");
+			this.otherFichiers.add(new Fichier(list[0], Integer
+					.parseInt(list[1]), list[2]));
 		}
-		return 1;
 	}
 
 	/**
@@ -193,18 +188,18 @@ public class Client{
 	 *            les nouveaux fichiers a ajouter
 	 * @throws IOException
 	 */
-	public int sendNewFiles(ArrayList<File> files) throws IOException {
+	public void sendNewFiles(ArrayList<File> files) throws IOException {
 		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
 		for (File f : files) {
 			outfiles.add(new Fichier(f, this.uuid, f.getPath()));
 		}
-		String msg = "NEWFILE:"+this.uuid+":";
+		String msg = "NEWFILE:"+this.uuid+":"+files.size();
+		this.send(msg, this.address, this.port);
 		for (Fichier g : outfiles) {
 			this.ownFichiers.add(g);
-			msg += g.toStringWithOutUuid();
+			msg = g.toStringWithOutUuid();
+			this.send(msg, this.address, this.port);
 		}
-		msg.substring(0, msg.length() - 1);
-		return this.send(msg, this.address, this.port);
 	}
 
 	/**
@@ -214,22 +209,22 @@ public class Client{
 	 *            les nouveaux fichiers a envoyer
 	 * @throws IOException
 	 */
-	public int sendRemoveFiles(ArrayList<File> files) throws IOException {
+	public void sendRemoveFiles(ArrayList<File> files) throws IOException {
 		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
 		for (File f : files) {
 			outfiles.add(new Fichier(f, this.uuid, f.getPath()));
 		}
-		String msg = "RMVFILE:"+this.uuid+":";
+		String msg = "RMVFILE:"+this.uuid+":"+files.size();
+		this.send(msg, this.address, this.port);
 		for (Fichier g : outfiles) {
 			for (int i = 0; i < this.ownFichiers.size(); i++) {
 				if (g.compareTo(this.ownFichiers.get(i)) == 0) {
-					msg += g.toStringWithOutUuid();
+					msg = g.toStringWithOutUuid();
 					this.ownFichiers.remove(i);
+					this.send(msg, this.address, this.port);
 				}
 			}
 		}
-		msg.substring(0, msg.length() - 1);
-		return this.send(msg, this.address, this.port);
 	}
 
 	/**
