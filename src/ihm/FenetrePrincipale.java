@@ -40,12 +40,15 @@ public class FenetrePrincipale extends JPanel implements Observer{
 	private JScrollPane panCenter;
 	private JScrollPane panLeft;
 	private JPanel panBas;
+	private JScrollPane panRight;
 	private JFileChooser fileChooser;
 	private JFileChooser repertoryChooser;
 	private JList<String> fichiersOther;
 	private DefaultListModel<String> modelOther;
 	private JList<String> fichiersOwn;
 	private DefaultListModel<String> modelOwn;
+	private JList<String> download;
+	private DefaultListModel<String> modelDownload;
 	private JMenuBar menuBar;
 	private JMenu importation;
 	private JMenu aide;
@@ -64,17 +67,21 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		this.setPreferredSize(new Dimension(1200, 1200));
 		this.parent = frame;
 		
-		modelOther = new DefaultListModel<String>();
-		this.fichiersOther = new JList<String>(modelOther);
+		this.modelOther = new DefaultListModel<String>();
+		this.fichiersOther = new JList<String>(this.modelOther);
 		for (int i=0; i<this.client.otherFichiers.size(); i++){
-			modelOther.addElement(this.client.otherFichiers.get(i).getName());
+			this.modelOther.addElement(this.client.otherFichiers.get(i).getName());
 		}
 		
-		modelOwn = new DefaultListModel<String>();
-		this.fichiersOwn = new JList<String>(modelOwn);
+		this.modelOwn = new DefaultListModel<String>();
+		this.fichiersOwn = new JList<String>(this.modelOwn);
 		for (int i=0; i<this.client.ownFichiers.size(); i++){
-			modelOwn.addElement(this.client.ownFichiers.get(i).getName());
+			this.modelOwn.addElement(this.client.ownFichiers.get(i).getName());
 		}
+		
+		this.modelDownload = new DefaultListModel<String>();
+		this.download = new JList<String>(this.modelDownload);
+		
 		
 		//Menu NORTH
 		this.menuBar = new JMenuBar();
@@ -150,11 +157,15 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		//JList des otherfichiers que l'on peut telecharger  CENTER
 		this.panCenter = new JScrollPane (this.fichiersOther);
 		
+		//JList des telechargement en cours ou fait
+		this.panRight = new JScrollPane(this.download);
+		
 		//Mise à jour de la barre d'etat
 		this.fichiersOther.addListSelectionListener(new ListSelectionListener(){
-			public void valueChanged (ListSelectionEvent e) { 
-				if(!e.getValueIsAdjusting()){
-			      Fichier f = client.otherFichiers.get(fichiersOther.getSelectedIndex());
+			public void valueChanged (ListSelectionEvent e) {
+				int i;
+				if(!e.getValueIsAdjusting() && (i = fichiersOther.getSelectedIndex())>-1){
+			      Fichier f = client.otherFichiers.get(i);
 			      name.setText("Name : "+f.getName());
 			      hash.setText("Hash : "+f.getHashcode());
 			      uuid.setText("UUID : "+f.getUuid());
@@ -185,6 +196,8 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		panBas.setBorder(new EtchedBorder());
 		
 		
+		
+		
 		this.add(panCenter, BorderLayout.CENTER);
 		this.add(panBas, BorderLayout.SOUTH);
 		this.add(panLeft, BorderLayout.WEST);
@@ -202,19 +215,17 @@ public class FenetrePrincipale extends JPanel implements Observer{
 	}
 	
 	public void updateOtherFiles (){
-		System.out.println("2");
-		modelOther.removeAllElements();
+		this.modelOther.removeAllElements();
 		for (int i=0; i<this.client.otherFichiers.size(); i++){
-			modelOther.addElement(this.client.otherFichiers.get(i).getName());
+			this.modelOther.addElement(this.client.otherFichiers.get(i).getName());
 		}
-		
+		this.revalidate();
 	}
 
 	@Override
 	public void update(Observable obs, Object txt) {
 		if (obs instanceof p2p.ThreadClient){
 			if (txt.toString().equals("file")){
-				System.out.println("1");
 				this.updateOtherFiles();
 			}
 			else{

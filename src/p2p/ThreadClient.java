@@ -18,7 +18,6 @@ public class ThreadClient extends Observable implements Runnable {
 	public void run() {
 		while (true) {
 			reponse = this.client.receive();
-			System.out.println("receive :"+reponse);
 			String[] change = reponse.split("[:]");
 			if (change.length>1){
 				String uuid = change[1];

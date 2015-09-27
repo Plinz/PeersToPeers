@@ -13,7 +13,7 @@ import java.util.Hashtable;
 
 import servTCP.Serveur;
 
-public class Client{
+public class Client {
 
 	private final static int _dgLength = 1500;
 	private DatagramSocket dgSocket;
@@ -25,7 +25,7 @@ public class Client{
 	public ArrayList<Fichier> ownFichiers;
 	public Hashtable<String, PeerInfo> peers;
 	public Serveur serveur;
-	
+
 	/**
 	 * Constructeur d'un client
 	 * 
@@ -50,7 +50,7 @@ public class Client{
 
 	public int initialisation() throws IOException {
 		this.register();
-		if (this.receiveUuid()==0)
+		if (this.receiveUuid() == 0)
 			return 0;
 		this.initInformations();
 		this.receiveList();
@@ -71,8 +71,10 @@ public class Client{
 		} catch (IOException e) {
 			return null;
 		}
-		return new String(dgPacket.getData(), dgPacket.getOffset(),
+		String s = new String(dgPacket.getData(), dgPacket.getOffset(),
 				dgPacket.getLength());
+		System.out.println("receive :" + s);
+		return s;
 	}
 
 	/**
@@ -119,7 +121,8 @@ public class Client{
 	 *            numero de port du serveur
 	 * @throws IOException
 	 */
-	private int send(String msg, InetAddress address, int port){
+	private int send(String msg, InetAddress address, int port) {
+		System.out.println("send :" + msg);
 		byte[] buffer = msg.getBytes();
 		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
 		dgPacket.setAddress(address);
@@ -165,17 +168,17 @@ public class Client{
 	 * @throws IOException
 	 */
 	private void receiveList() throws IOException {
-		String [] reponse = this.receive().split("[:]");
+		String[] reponse = this.receive().split("[:]");
 		int nb = Integer.parseInt(reponse[1]);
-		for (int i=0; i<nb; i++){
-			String [] list = this.receive().split("[:]");
+		for (int i = 0; i < nb; i++) {
+			String[] list = this.receive().split("[:]");
 			this.peers.put(list[0], new PeerInfo(list[0], list[1], list[2]));
 		}
 
 		reponse = this.receive().split("[:]");
 		nb = Integer.parseInt(reponse[1]);
-		for (int i=0; i<nb; i++){
-			String [] list = this.receive().split("[|]");
+		for (int i = 0; i < nb; i++) {
+			String[] list = this.receive().split("[|]");
 			this.otherFichiers.add(new Fichier(list[0], Integer
 					.parseInt(list[1]), list[2]));
 		}
@@ -190,15 +193,18 @@ public class Client{
 	 */
 	public void sendNewFiles(ArrayList<File> files) throws IOException {
 		ArrayList<Fichier> outfiles = new ArrayList<Fichier>();
-		for (File f : files) {
-			outfiles.add(new Fichier(f, this.uuid, f.getPath()));
-		}
-		String msg = "NEWFILE:"+this.uuid+":"+files.size();
-		this.send(msg, this.address, this.port);
-		for (Fichier g : outfiles) {
-			this.ownFichiers.add(g);
-			msg = g.toStringWithOutUuid();
+		if (files != null && files.size() != 0) {
+			for (File f : files) {
+				if (f != null)
+					outfiles.add(new Fichier(f, this.uuid, f.getPath()));
+			}
+			String msg = "NEWFILE:" + this.uuid + ":" + files.size();
 			this.send(msg, this.address, this.port);
+			for (Fichier g : outfiles) {
+				this.ownFichiers.add(g);
+				msg = g.toStringWithOutUuid();
+				this.send(msg, this.address, this.port);
+			}
 		}
 	}
 
@@ -214,7 +220,7 @@ public class Client{
 		for (File f : files) {
 			outfiles.add(new Fichier(f, this.uuid, f.getPath()));
 		}
-		String msg = "RMVFILE:"+this.uuid+":"+files.size();
+		String msg = "RMVFILE:" + this.uuid + ":" + files.size();
 		this.send(msg, this.address, this.port);
 		for (Fichier g : outfiles) {
 			for (int i = 0; i < this.ownFichiers.size(); i++) {
@@ -237,20 +243,17 @@ public class Client{
 		Thread t = new Thread(new ThreadClient(this, f));
 		t.start();
 	}
-	
-	
-	public void runServeurTCP(){
+
+	public void runServeurTCP() {
 		try {
 			this.serveur = new Serveur(this.port, this);
 			this.serveur.start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
+		}
 	}
-	
-	
-	
+
 	/**
 	 * Suite d'instruction lancant un client
 	 * 
