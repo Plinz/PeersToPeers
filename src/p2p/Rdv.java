@@ -119,7 +119,9 @@ public class Rdv {
 	 */
 	private void send(InetAddress address, int port, String msg)
 			throws IOException {
+		buffer = null;
 		buffer = msg.getBytes();
+		System.out.println("buf msg"+msg);
 		DatagramPacket dgPacket = new DatagramPacket(buffer, 0, buffer.length,
 				address, port);
 		dgSocket.send(dgPacket);
@@ -179,6 +181,7 @@ public class Rdv {
 			this.fichiers.add(f);
 			fich.add(f);
 		}
+		
 		Enumeration<PeerInfo> p = peers.elements();
 		while (p.hasMoreElements()) {
 			PeerInfo peer = p.nextElement();
@@ -187,11 +190,12 @@ public class Rdv {
 			if (!peer.getUUID().toString().equals(uuid)) {
 				System.out.println("ok");
 				try {
-					String msg = "NEWFILE:" + uuid + ":" + fich.size();
-					send(peer.getAddress(), peer.getPort(), msg);
+					String sendmsg = "NEWFILE:" + uuid + ":" + fich.size();
+					System.out.println("sendmsg : "+sendmsg);
+					send(peer.getAddress(), peer.getPort(), sendmsg);
 					for (int i = 0; i < fich.size(); i++) {
-						msg = i + "|" + fich.get(i).toStringWithOutUuid();
-						send(peer.getAddress(), peer.getPort(), msg);
+						sendmsg = i + "|" + fich.get(i).toStringWithOutUuid();
+						send(peer.getAddress(), peer.getPort(), sendmsg);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();

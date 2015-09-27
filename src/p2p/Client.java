@@ -175,7 +175,7 @@ public class Client{
 		reponse = this.receive().split("[:]");
 		nb = Integer.parseInt(reponse[1]);
 		for (int i=0; i<nb; i++){
-			String [] list = this.receive().split("[:]");
+			String [] list = this.receive().split("[|]");
 			this.otherFichiers.add(new Fichier(list[0], Integer
 					.parseInt(list[1]), list[2]));
 		}
