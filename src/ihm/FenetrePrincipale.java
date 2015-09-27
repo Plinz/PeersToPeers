@@ -7,8 +7,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -30,6 +33,7 @@ import javax.swing.event.ListSelectionListener;
 
 import p2p.Client;
 import p2p.Fichier;
+import p2p.PeerInfo;
 
 public class FenetrePrincipale extends JPanel implements Observer{
 
@@ -64,6 +68,7 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		cl.receiveChange(this);
 		this.setLayout(new BorderLayout());
 		this.client = cl;
+		this.client.view = this;
 		this.setPreferredSize(new Dimension(1200, 1200));
 		this.parent = frame;
 		
@@ -174,6 +179,23 @@ public class FenetrePrincipale extends JPanel implements Observer{
 			}
 		});
 		
+		//Double click pour Telechargement
+		this.fichiersOwn.addMouseListener(new MouseAdapter(){
+		    @Override
+		    public void mouseClicked(MouseEvent e){
+		        if(e.getClickCount()==2){
+		        	Fichier f = client.otherFichiers.get(fichiersOther.getSelectedIndex());
+		        	PeerInfo p = client.peers.get(f.getUuid());
+		        	try {
+						servTCP.Client clientTCP = new servTCP.Client(p.getAddress().toString(), p.getPort(), f.getHashcode(), f.getFile().getPath());	
+		        	} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+		        }
+		    }
+		});
+		
 		//Barre d'etat SOUTH
 		panBas = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -233,4 +255,15 @@ public class FenetrePrincipale extends JPanel implements Observer{
 			}
 		}
 	}
+	
+	
+	
+	public void runDownload(int range){
+		this.modelOwn.setElementAt(this.modelOwn.get(range)+" - Download", range);
+	}
+	
+	public void stopDownload(int range){
+		this.modelOwn.setElementAt(this.client.ownFichiers.get(range).getName(), range);
+	}
+
 }

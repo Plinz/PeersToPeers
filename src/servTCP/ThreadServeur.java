@@ -33,6 +33,7 @@ public class ThreadServeur extends Thread {
 				if (this.client.ownFichiers.get(i).getHashcode() == Integer
 						.parseInt(reponse)) {
 					File f = this.client.ownFichiers.get(i).getFile();
+					this.client.view.runDownload(i);
 					byte[] byout = new byte[(int) f.length()];
 					FileInputStream fis = new FileInputStream(f);
 					BufferedInputStream bis = new BufferedInputStream(fis);
@@ -40,6 +41,7 @@ public class ThreadServeur extends Thread {
 					out.write(byout, 0, byout.length);
 					out.flush();
 		            if (fis!=null) fis.close();
+		            this.client.view.stopDownload(i);
 				}
 			}
 		} catch (Exception e) {

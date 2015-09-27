@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Random;
 
 import servTCP.Serveur;
 
@@ -25,6 +26,7 @@ public class Client {
 	public ArrayList<Fichier> ownFichiers;
 	public Hashtable<String, PeerInfo> peers;
 	public Serveur serveur;
+	public FenetrePrincipale view;
 
 	/**
 	 * Constructeur d'un client
@@ -47,6 +49,8 @@ public class Client {
 		this.ownFichiers = new ArrayList<Fichier>();
 		this.peers = new Hashtable<String, PeerInfo>();
 	}
+	
+	
 
 	public int initialisation() throws IOException {
 		this.register();
@@ -54,6 +58,7 @@ public class Client {
 			return 0;
 		this.initInformations();
 		this.receiveList();
+		this.runServeurTCP();
 		return 1;
 	}
 
@@ -246,7 +251,8 @@ public class Client {
 
 	public void runServeurTCP() {
 		try {
-			this.serveur = new Serveur(this.port, this);
+			Random r = new Random();
+			this.serveur = new Serveur(5000+r.nextInt(100), this);
 			this.serveur.start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
