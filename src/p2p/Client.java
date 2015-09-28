@@ -49,8 +49,6 @@ public class Client {
 		this.ownFichiers = new ArrayList<Fichier>();
 		this.peers = new Hashtable<String, PeerInfo>();
 	}
-	
-	
 
 	public int initialisation() throws IOException {
 		this.register();
@@ -253,9 +251,13 @@ public class Client {
 	public void runServeurTCP() {
 		try {
 			Random r = new Random();
-			this.serveur = new Serveur(5000+r.nextInt(100), this);
+			try {
+				this.serveur = new Serveur(1024 + r.nextInt(8000), this);
+			} catch (Exception e) {
+				runServeurTCP();
+			}
 			this.serveur.start();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
