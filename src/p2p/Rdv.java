@@ -62,7 +62,7 @@ public class Rdv {
 			DatagramPacket dgPacket = receive();
 			String msg = new String(dgPacket.getData(), dgPacket.getOffset(),
 					dgPacket.getLength());
-			System.out.println("receive :"+msg);
+			System.out.println("receive :" + msg);
 			InetAddress address = dgPacket.getAddress();
 			int port = dgPacket.getPort();
 
@@ -120,7 +120,7 @@ public class Rdv {
 	private void send(InetAddress address, int port, String msg)
 			throws IOException {
 		buffer = msg.getBytes();
-		System.out.println("send :"+msg);
+		System.out.println("send :" + msg);
 		DatagramPacket dgPacket = new DatagramPacket(buffer, 0, buffer.length,
 				address, port);
 		dgSocket.send(dgPacket);
@@ -132,9 +132,10 @@ public class Rdv {
 	 * @param uuid
 	 *            Identifiant personnel du client
 	 * @return String des uuid|adresse|port de chaque client
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	private void retrieve(String uuid, InetAddress address, int port) throws IOException {
+	private void retrieve(String uuid, InetAddress address, int port)
+			throws IOException {
 		System.out.println("ReTRieVing");
 		String msg = "NEWPEER:" + (peers.size() - 1);
 		this.send(address, port, msg);
@@ -150,7 +151,7 @@ public class Rdv {
 		}
 		msg = "NEWFILE:" + this.fichiers.size();
 		this.send(address, port, msg);
-		for (int i = 0; i < this.fichiers.size(); i++){
+		for (int i = 0; i < this.fichiers.size(); i++) {
 			msg = this.fichiers.get(i).toString();
 			send(address, port, msg);
 		}
@@ -174,13 +175,13 @@ public class Rdv {
 			DatagramPacket dgPacket = this.receive();
 			String msg = new String(dgPacket.getData(), dgPacket.getOffset(),
 					dgPacket.getLength());
-			System.out.println("receive :"+msg);
+			System.out.println("receive :" + msg);
 			String[] list = msg.split("[|]");
 			Fichier f = new Fichier(list[0], Integer.parseInt(list[1]), uuid);
 			this.fichiers.add(f);
 			fich.add(f);
 		}
-		
+
 		Enumeration<PeerInfo> p = peers.elements();
 		while (p.hasMoreElements()) {
 			PeerInfo peer = p.nextElement();
