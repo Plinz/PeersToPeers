@@ -175,11 +175,7 @@ public class Rdv {
 			DatagramPacket dgPacket = this.receive();
 			String msg = new String(dgPacket.getData(), dgPacket.getOffset(),
 					dgPacket.getLength());
-<<<<<<< HEAD
-			System.out.println("receive :"+msg+" i="+i+" nb="+nb);
-=======
 			System.out.println("receive :" + msg);
->>>>>>> 32b48951d8c5b6e95429be86312bdeef7011b970
 			String[] list = msg.split("[|]");
 			Fichier f = new Fichier(list[0], Integer.parseInt(list[1]), uuid);
 			this.fichiers.add(f);

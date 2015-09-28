@@ -180,18 +180,29 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		});
 		
 		//Double click pour Telechargement
-		this.fichiersOwn.addMouseListener(new MouseAdapter(){
+		this.fichiersOther.addMouseListener(new MouseAdapter(){
 		    @Override
 		    public void mouseClicked(MouseEvent e){
+	        	System.out.println("test 0");
 		        if(e.getClickCount()==2){
 		        	Fichier f = client.otherFichiers.get(fichiersOther.getSelectedIndex());
 		        	PeerInfo p = client.peers.get(f.getUuid());
+		        	modelDownload.addElement(f.getName());
+		        	System.out.println("test 1");
 		        	try {
-						servTCP.Client clientTCP = new servTCP.Client(p.getAddress().toString(), p.getPort(), f.getHashcode(), f.getFile().getPath());	
+			        	System.out.println("test 2");
+						servTCP.ThreadClient clientTCP = new servTCP.ThreadClient(p.getAddress().toString(), p.getPort(), f.getHashcode(), f.getFile().getPath());	
+			        	System.out.println("test 3");
+						clientTCP.run();
+			        	System.out.println("test 4");
 		        	} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+		        	modelDownload.removeElement(f.getName());
+		        }
+		        else{
+		        	System.out.println("pas click");
 		        }
 		    }
 		});

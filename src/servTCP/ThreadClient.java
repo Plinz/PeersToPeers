@@ -15,9 +15,9 @@ public class ThreadClient extends Thread {
 	int hash;
 	String pathname;
 
-	public ThreadClient(Socket s, int hash, String pathname) throws IOException {
+	public ThreadClient(String ip, int port, int hash, String pathname) throws IOException {
+		this.s = new Socket(ip, port);
 		this.pathname = pathname;
-		this.s = s;
 		this.hash = hash;
 		in = new ObjectInputStream(s.getInputStream());
 		out = new ObjectOutputStream(s.getOutputStream());
@@ -26,6 +26,7 @@ public class ThreadClient extends Thread {
 	@Override
 	public void run() {
 		try {
+        	System.out.println("test 5");
 			out.writeInt(this.hash);
 
 			byte[] byin = new byte[1024];
@@ -33,20 +34,21 @@ public class ThreadClient extends Thread {
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
 			int bytesRead = in.read(byin, 0, byin.length);
 			int current = bytesRead;
-
+        	System.out.println("test 6");
 			do {
 				bytesRead = in.read(byin, current,
 						(byin.length - current));
 				if (bytesRead >= 0)
 					current += bytesRead;
 			} while (bytesRead > -1);
-
+        	System.out.println("test 7");
 			bos.write(byin, 0, current);
 			bos.flush();
 			fos.close();
 			bos.close();
 			in.close();
 			out.close();
+        	System.out.println("test 8");
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
