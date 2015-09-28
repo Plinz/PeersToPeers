@@ -125,7 +125,7 @@ public class Client {
 	 * @throws IOException
 	 */
 	private int send(String msg, InetAddress address, int port) {
-		System.out.println("send :" + msg);
+		//System.out.println("send :" + msg);
 		byte[] buffer = msg.getBytes();
 		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
 		dgPacket.setAddress(address);
@@ -230,6 +230,7 @@ public class Client {
 				if (g.compareTo(this.ownFichiers.get(i)) == 0) {
 					msg = g.toStringWithOutUuid();
 					this.ownFichiers.remove(i);
+					System.out.println("SEND:"+msg+" nb="+outfiles.size());
 					this.send(msg, this.address, this.port);
 				}
 			}
