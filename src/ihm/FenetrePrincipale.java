@@ -11,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -94,6 +93,7 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		this.aide = new JMenu("Aide");
 		this.importFile = new JMenuItem ("Importer des fichiers");
 		this.importRepertory = new JMenuItem ("Importer des dossiers");
+		this.importRepertory.setVisible(false);
 		this.importation.add(this.importFile);
 		this.importation.add(this.importRepertory);
 		this.menuBar.add(this.importation);
