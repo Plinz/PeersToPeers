@@ -18,7 +18,9 @@ public class Serveur extends Thread {
 	public void run() {
 		try {
 			while (true) {
+				System.out.println("serveur waiting");
 				this.sock = sv.accept();
+				System.out.println("serveur accepting");
 				ThreadServeur ts = new ThreadServeur(sock, this.client);
 				ts.start();
 				sock.close();

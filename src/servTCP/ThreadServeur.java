@@ -24,8 +24,9 @@ public class ThreadServeur extends Thread {
 		try {
 			byte buf[] = new byte[1024];
 			int n;
-			while ((n = in.read(buf)) != -1) {
+			while ((n = in.readInt()) == -1) {
 			}
+			System.out.println("in : "+n);
 			in.close();
 			String reponse = new String(buf, "UTF-8");
 
