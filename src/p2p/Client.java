@@ -125,7 +125,7 @@ public class Client {
 	 * @throws IOException
 	 */
 	private int send(String msg, InetAddress address, int port) {
-		//System.out.println("send :" + msg);
+		// System.out.println("send :" + msg);
 		byte[] buffer = msg.getBytes();
 		dgPacket = new DatagramPacket(buffer, 0, buffer.length);
 		dgPacket.setAddress(address);
@@ -230,7 +230,8 @@ public class Client {
 				if (g.compareTo(this.ownFichiers.get(i)) == 0) {
 					msg = g.toStringWithOutUuid();
 					this.ownFichiers.remove(i);
-					System.out.println("SEND:"+msg+" nb="+outfiles.size());
+					System.out
+							.println("SEND:" + msg + " nb=" + outfiles.size());
 					this.send(msg, this.address, this.port);
 				}
 			}
@@ -250,15 +251,9 @@ public class Client {
 
 	public void runServeurTCP() {
 		try {
-			Random r = new Random();
-			try {
-				this.serveur = new Serveur(1024 + r.nextInt(8000), this);
-			} catch (Exception e) {
-				runServeurTCP();
-			}
+			this.serveur = new Serveur(5002, this);
 			this.serveur.start();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

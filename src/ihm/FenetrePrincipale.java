@@ -191,7 +191,7 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		        	System.out.println("test 1");
 		        	try {
 			        	System.out.println("test 2");
-						servTCP.ThreadClient clientTCP = new servTCP.ThreadClient(p.getAddress().toString(), p.getPort(), f.getHashcode(), "/");	
+						servTCP.ThreadClient clientTCP = new servTCP.ThreadClient(p.getAddress(), 5002, f.getHashcode(), "/");	
 			        	System.out.println("test 3");
 						clientTCP.run();
 			        	System.out.println("test 4");

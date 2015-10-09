@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 
 public class ThreadClient extends Thread {
@@ -15,18 +16,20 @@ public class ThreadClient extends Thread {
 	int hash;
 	String pathname;
 
-	public ThreadClient(String ip, int port, int hash, String pathname) throws IOException {
+	public ThreadClient(InetAddress ip, int port, int hash, String pathname)
+			throws IOException {
+		System.out.println("port ==>" + port);
 		this.s = new Socket(ip, port);
 		this.pathname = pathname;
 		this.hash = hash;
-		in = new ObjectInputStream(s.getInputStream());
-		out = new ObjectOutputStream(s.getOutputStream());
 	}
 
 	@Override
 	public void run() {
 		try {
-        	System.out.println("test 5");
+			in = new ObjectInputStream(s.getInputStream());
+			out = new ObjectOutputStream(s.getOutputStream());
+			System.out.println("test 5");
 			out.writeInt(this.hash);
 
 			byte[] byin = new byte[1024];
@@ -34,21 +37,20 @@ public class ThreadClient extends Thread {
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
 			int bytesRead = in.read(byin, 0, byin.length);
 			int current = bytesRead;
-        	System.out.println("test 6");
+			System.out.println("test 6");
 			do {
-				bytesRead = in.read(byin, current,
-						(byin.length - current));
+				bytesRead = in.read(byin, current, (byin.length - current));
 				if (bytesRead >= 0)
 					current += bytesRead;
 			} while (bytesRead > -1);
-        	System.out.println("test 7");
+			System.out.println("test 7");
 			bos.write(byin, 0, current);
 			bos.flush();
 			fos.close();
 			bos.close();
 			in.close();
 			out.close();
-        	System.out.println("test 8");
+			System.out.println("test 8");
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
