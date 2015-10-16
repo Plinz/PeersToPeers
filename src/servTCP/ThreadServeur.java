@@ -8,17 +8,37 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ThreadServeur.
+ */
 public class ThreadServeur extends Thread {
+	
+	/** The in. */
 	private ObjectInputStream in;
+	
+	/** The out. */
 	private ObjectOutputStream out;
+	
+	/** The client. */
 	private p2p.Client client;
 
+	/**
+	 * Instantiates a new thread serveur.
+	 *
+	 * @param s the s
+	 * @param c the c
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public ThreadServeur(Socket s, p2p.Client c) throws IOException {
 		in = new ObjectInputStream(s.getInputStream());
 		out = new ObjectOutputStream(s.getOutputStream());
 		this.client = c;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	@Override
 	public void run() {
 		try {

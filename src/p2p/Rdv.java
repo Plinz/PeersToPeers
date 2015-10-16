@@ -25,9 +25,7 @@ public class Rdv {
 	 */
 	private Hashtable<String, PeerInfo> peers;
 
-	/**
-	 * Initialisation du buffer
-	 */
+	/** Initialisation du buffer. */
 	private byte[] buffer = null;
 
 	/**

@@ -9,13 +9,36 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ThreadClient.
+ */
 public class ThreadClient extends Thread {
+	
+	/** The s. */
 	Socket s;
+	
+	/** The in. */
 	ObjectInputStream in;
+	
+	/** The out. */
 	ObjectOutputStream out;
+	
+	/** The hash. */
 	int hash;
+	
+	/** The pathname. */
 	String pathname;
 
+	/**
+	 * Instantiates a new thread client.
+	 *
+	 * @param ip the ip
+	 * @param port the port
+	 * @param hash the hash
+	 * @param pathname the pathname
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public ThreadClient(InetAddress ip, int port, int hash, String pathname)
 			throws IOException {
 		System.out.println("port ==>" + port);
@@ -24,6 +47,9 @@ public class ThreadClient extends Thread {
 		this.hash = hash;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	@Override
 	public void run() {
 		try {

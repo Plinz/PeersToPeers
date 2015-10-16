@@ -20,21 +20,45 @@ import javax.swing.JTextField;
 
 import p2p.Client;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FenetreConnexion.
+ */
 public class FenetreConnexion extends JPanel implements ActionListener {
 
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The parent. */
 	JFrame parent;
 	
+	/** The serveur. */
 	JLabel serveur = new JLabel("Indentifiant du serveur :");
+	
+	/** The address. */
 	JLabel address = new JLabel("Adresse :");
+	
+	/** The port. */
 	JLabel port = new JLabel("Port :");
+	
+	/** The error. */
 	JLabel error = new JLabel("");
+	
+	/** The ip. */
 	JTextField ip = new JTextField();
+	
+	/** The po. */
 	JTextField po = new JTextField();
+	
+	/** The ok. */
 	JButton ok = new JButton("Connexion");
 
+	/**
+	 * Instantiates a new fenetre connexion.
+	 *
+	 * @param frame the frame
+	 */
 	public FenetreConnexion(JFrame frame) {
 		setPreferredSize(new Dimension(300, 150));
 		this.setLayout(new GridBagLayout());
@@ -94,6 +118,9 @@ public class FenetreConnexion extends JPanel implements ActionListener {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		InetAddress addr;

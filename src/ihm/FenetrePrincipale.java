@@ -34,35 +34,91 @@ import p2p.Client;
 import p2p.Fichier;
 import p2p.PeerInfo;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FenetrePrincipale.
+ */
 public class FenetrePrincipale extends JPanel implements Observer{
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The parent. */
 	JFrame parent;
 
+	/** The pan center. */
 	private JScrollPane panCenter;
+	
+	/** The pan left. */
 	private JScrollPane panLeft;
+	
+	/** The pan bas. */
 	private JPanel panBas;
+	
+	/** The pan right. */
 	private JScrollPane panRight;
+	
+	/** The file chooser. */
 	private JFileChooser fileChooser;
+	
+	/** The repertory chooser. */
 	private JFileChooser repertoryChooser;
+	
+	/** The fichiers other. */
 	private JList<String> fichiersOther;
+	
+	/** The model other. */
 	private DefaultListModel<String> modelOther;
+	
+	/** The fichiers own. */
 	private JList<String> fichiersOwn;
+	
+	/** The model own. */
 	private DefaultListModel<String> modelOwn;
+	
+	/** The download. */
 	private JList<String> download;
+	
+	/** The model download. */
 	private DefaultListModel<String> modelDownload;
+	
+	/** The menu bar. */
 	private JMenuBar menuBar;
+	
+	/** The importation. */
 	private JMenu importation;
+	
+	/** The aide. */
 	private JMenu aide;
+	
+	/** The import file. */
 	private JMenuItem importFile;
+	
+	/** The import repertory. */
 	private JMenuItem importRepertory;
+	
+	/** The name. */
 	private JLabel name = new JLabel("Name : ");
+	
+	/** The hash. */
 	private JLabel hash = new JLabel("Hash : ");
+	
+	/** The uuid. */
 	private JLabel uuid = new JLabel("UUID : ");
+	
+	/** The addr. */
 	private JLabel addr = new JLabel("Adresse : ");
+	
+	/** The client. */
 	private Client client;
 
+	/**
+	 * Instantiates a new fenetre principale.
+	 *
+	 * @param frame the frame
+	 * @param cl the cl
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public FenetrePrincipale(JFrame frame, Client cl) throws IOException {
 		cl.receiveChange(this);
 		this.setLayout(new BorderLayout());
@@ -247,6 +303,9 @@ public class FenetrePrincipale extends JPanel implements Observer{
 
 	}
 	
+	/**
+	 * Update other files.
+	 */
 	public void updateOtherFiles (){
 		this.modelOther.removeAllElements();
 		for (int i=0; i<this.client.otherFichiers.size(); i++){
@@ -255,6 +314,9 @@ public class FenetrePrincipale extends JPanel implements Observer{
 		this.revalidate();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
 	@Override
 	public void update(Observable obs, Object txt) {
 		if (obs instanceof p2p.ThreadClient){
@@ -269,10 +331,20 @@ public class FenetrePrincipale extends JPanel implements Observer{
 	
 	
 	
+	/**
+	 * Run download.
+	 *
+	 * @param range the range
+	 */
 	public void runDownload(int range){
 		this.modelOwn.setElementAt(this.modelOwn.get(range)+" - Download", range);
 	}
 	
+	/**
+	 * Stop download.
+	 *
+	 * @param range the range
+	 */
 	public void stopDownload(int range){
 		this.modelOwn.setElementAt(this.client.ownFichiers.get(range).getName(), range);
 	}

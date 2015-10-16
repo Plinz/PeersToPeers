@@ -4,16 +4,32 @@ import ihm.FenetrePrincipale;
 
 import java.util.Observable;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ThreadClient.
+ */
 public class ThreadClient extends Observable implements Runnable {
 
+	/** The client. */
 	Client client;
+	
+	/** The reponse. */
 	String reponse;
 
+	/**
+	 * Instantiates a new thread client.
+	 *
+	 * @param client the client
+	 * @param f the f
+	 */
 	public ThreadClient(Client client, FenetrePrincipale f) {
 		this.addObserver(f);
 		this.client = client;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
 	@Override
 	public void run() {
 		while (true) {

@@ -29,13 +29,10 @@ public class Client {
 	public FenetrePrincipale view;
 
 	/**
-	 * Constructeur d'un client
-	 * 
-	 * @param address
-	 *            adresse du client
-	 * @param port
-	 *            numero de port du client
-	 * @throws IOException
+	 * Constructeur d'un client.
+	 *
+	 * @param address            adresse du client
+	 * @param port            numero de port du client
 	 */
 	public Client(InetAddress address, Integer port) {
 		try {
